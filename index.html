@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
+
 <meta charset="UTF-8">
 
 <meta
@@ -13,12 +15,12 @@
 <style>
 
 :root {
-  --bg: #080808;
+  --background: #080808;
   --wall: #eeeeee;
-  --path: #151515;
+  --path: #171717;
   --text: #ffffff;
-  --muted: #9d9d9d;
-  --accent: #d6b36a;
+  --muted: #999999;
+  --exit: #d6b36a;
 }
 
 * {
@@ -33,8 +35,7 @@ body {
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -47,11 +48,10 @@ body {
   align-items: center;
   justify-content: center;
 
-  text-align: center;
+  background: var(--background);
+  color: var(--text);
 
   padding: 25px;
-
-  background: var(--bg);
 }
 
 .screen.active {
@@ -63,92 +63,49 @@ body {
    TELA INICIAL
 ========================= */
 
-.content,
-.final-content {
+.content {
   width: 100%;
   max-width: 600px;
-
-  animation: aparecer .5s ease;
+  text-align: center;
 }
 
-@keyframes aparecer {
-
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-}
-
-.eyebrow,
-.final-small {
-
-  color: var(--accent);
-
+.eyebrow {
+  color: var(--exit);
   font-size: 11px;
-
   font-weight: bold;
-
   letter-spacing: 4px;
-
   margin-bottom: 25px;
-
 }
 
 h1 {
-
   margin: 0;
-
-  font-size: clamp(42px, 10vw, 75px);
-
+  font-size: clamp(42px, 11vw, 72px);
   line-height: .95;
-
   letter-spacing: -2px;
-
 }
 
-.description,
-.final-text {
-
-  max-width: 420px;
-
+.description {
+  max-width: 400px;
   margin: 30px auto;
-
   color: var(--muted);
-
   font-size: 17px;
-
   line-height: 1.6;
-
 }
 
 .button {
-
   border: none;
-
-  background: #ffffff;
-
-  color: #000000;
-
-  padding: 18px 35px;
-
   border-radius: 50px;
 
-  font-size: 13px;
+  background: #ffffff;
+  color: #000000;
 
+  padding: 18px 36px;
+
+  font-size: 12px;
   font-weight: bold;
-
   letter-spacing: 1px;
 
   cursor: pointer;
-
-  transition: transform .15s ease;
-
 }
 
 .button:active {
@@ -157,7 +114,7 @@ h1 {
 
 
 /* =========================
-   JOGO
+   TELA DO JOGO
 ========================= */
 
 #gameScreen {
@@ -165,84 +122,62 @@ h1 {
 }
 
 .game-header {
-
   position: fixed;
 
-  top: 20px;
-
+  top: 18px;
   left: 0;
 
   width: 100%;
 
-  z-index: 20;
-
   text-align: center;
 
-  pointer-events: none;
+  z-index: 20;
 
+  pointer-events: none;
 }
 
 .game-title {
-
-  color: #c0c0c0;
-
+  color: #cccccc;
   font-size: 11px;
-
   font-weight: bold;
-
   letter-spacing: 3px;
-
 }
 
 .game-hint {
-
-  margin-top: 10px;
-
+  margin-top: 8px;
   color: #777777;
-
   font-size: 10px;
-
   letter-spacing: 1px;
-
 }
 
 #mazeContainer {
-
   width: 100%;
   height: 100%;
 
   display: flex;
 
   align-items: center;
-
   justify-content: center;
 
-  padding: 75px 14px 20px;
-
+  padding: 70px 10px 20px;
 }
 
 #maze {
-
-  width: min(92vw, 560px);
-
+  width: min(96vw, 560px);
   aspect-ratio: 1 / 1;
 
   display: grid;
 
   background: var(--wall);
 
-  border: 2px solid #444;
-
   touch-action: none;
 
+  border: 3px solid #333333;
 }
 
 .cell {
-
   position: relative;
-
   background: var(--wall);
-
 }
 
 .cell.path {
@@ -250,150 +185,145 @@ h1 {
 }
 
 .cell.exit {
-
-  background: var(--accent);
-
-  box-shadow:
-    inset 0 0 0 2px rgba(255,255,255,.15);
-
+  background: var(--exit);
 }
 
 
 /* =========================
-   PERSONAGEM
+   BONEQUINHO
 ========================= */
 
 .player {
-
   position: absolute;
 
-  inset: 8%;
+  inset: 10%;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
-  z-index: 10;
 
   pointer-events: none;
 
+  z-index: 10;
 }
 
 .person {
-
   position: relative;
 
   width: 70%;
-
   height: 90%;
-
 }
 
 .head {
-
   position: absolute;
 
   width: 30%;
-
   aspect-ratio: 1;
 
   left: 35%;
-
   top: 0;
 
   border-radius: 50%;
 
-  background: #ffffff;
-
+  background: white;
 }
 
 .body {
-
   position: absolute;
 
-  width: 45%;
+  width: 42%;
+  height: 45%;
 
-  height: 46%;
-
-  left: 27.5%;
-
+  left: 29%;
   top: 25%;
 
-  border-radius: 45% 45% 25% 25%;
+  background: white;
 
-  background: #ffffff;
-
+  border-radius: 40% 40% 25% 25%;
 }
 
 .arm {
-
   position: absolute;
 
-  width: 12%;
-
-  height: 36%;
+  width: 11%;
+  height: 35%;
 
   top: 31%;
 
+  background: white;
+
   border-radius: 20px;
-
-  background: #ffffff;
-
 }
 
 .arm.left {
-
-  left: 14%;
-
+  left: 15%;
   transform: rotate(15deg);
-
 }
 
 .arm.right {
-
-  right: 14%;
-
+  right: 15%;
   transform: rotate(-15deg);
-
 }
 
 .leg {
-
   position: absolute;
 
-  width: 15%;
-
+  width: 14%;
   height: 28%;
 
   top: 68%;
 
+  background: white;
+
   border-radius: 20px;
-
-  background: #ffffff;
-
 }
 
 .leg.left {
-  left: 31%;
+  left: 32%;
 }
 
 .leg.right {
-  right: 31%;
+  right: 32%;
 }
 
 
 /* =========================
-   FINAL
+   TELA FINAL
 ========================= */
 
-.final-title {
+.final-content {
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+}
+
+.final-small {
+  color: var(--exit);
+
+  font-size: 11px;
+  font-weight: bold;
+
+  letter-spacing: 4px;
+
   margin-bottom: 25px;
 }
 
+.final-text {
+  max-width: 430px;
+
+  margin: 30px auto;
+
+  color: var(--muted);
+
+  font-size: 17px;
+
+  line-height: 1.7;
+}
+
 </style>
+
 </head>
+
 
 <body>
 
@@ -410,22 +340,23 @@ h1 {
   <div class="content">
 
     <div class="eyebrow">
-      UMA EXPERIÊNCIA
+      DOMINGO DO REENCONTRO
     </div>
 
     <h1>
-      VOCÊ CONSEGUE<br>
-      ENCONTRAR<br>
-      O CAMINHO?
+      ENCONTRE<br>
+      O CAMINHO
     </h1>
 
     <p class="description">
-      Nem sempre sabemos qual caminho seguir.
+      Existem muitos caminhos.
+      <br>
+      Mas apenas um pode levar você de volta.
     </p>
 
     <button
       class="button"
-      onclick="startGame()"
+      id="startButton"
     >
       COMEÇAR
     </button>
@@ -436,7 +367,7 @@ h1 {
 
 
 <!-- =========================
-     TELA DO JOGO
+     JOGO
 ========================= -->
 
 <section
@@ -451,7 +382,7 @@ h1 {
     </div>
 
     <div class="game-hint">
-      DESLIZE PARA ESCOLHER UMA DIREÇÃO
+      DESLIZE PARA ESCOLHER A DIREÇÃO
     </div>
 
   </div>
@@ -480,24 +411,25 @@ h1 {
       VOCÊ ENCONTROU O CAMINHO
     </div>
 
-    <h1 class="final-title">
+    <h1>
       O CAMINHO<br>
       DE VOLTA<br>
       ESTÁ ABERTO.
     </h1>
 
     <p class="final-text">
-      Às vezes nos perdemos.
+      Às vezes nos perdemos pelo caminho.
       <br><br>
-      Às vezes escolhemos caminhos que nos afastam.
+      Às vezes escolhemos direções que nos afastam.
       <br><br>
-      Mas para Deus, sempre existe
-      um caminho de volta.
+      Mas não importa o quanto você tenha se distanciado.
+      <br><br>
+      Para Deus, sempre existe um caminho de volta.
     </p>
 
     <button
       class="button"
-      onclick="restartGame()"
+      id="restartButton"
     >
       JOGAR NOVAMENTE
     </button>
@@ -509,12 +441,26 @@ h1 {
 
 <script>
 
-/* =========================
-   CONFIGURAÇÕES
-========================= */
 
-const ROWS = 15;
-const COLS = 15;
+/* =====================================
+   CONFIGURAÇÕES
+===================================== */
+
+/*
+  IMPORTANTE:
+
+  ROWS e COLS precisam ser números ÍMPARES.
+
+  21 cria um labirinto bom para celular.
+*/
+
+const ROWS = 21;
+const COLS = 21;
+
+
+/* =====================================
+   VARIÁVEIS
+===================================== */
 
 let mazeMap = [];
 
@@ -528,9 +474,9 @@ let touchStartX = 0;
 let touchStartY = 0;
 
 
-/* =========================
-   EMBARALHAR ARRAY
-========================= */
+/* =====================================
+   EMBARALHAR DIREÇÕES
+===================================== */
 
 function shuffle(array) {
 
@@ -545,11 +491,14 @@ function shuffle(array) {
         Math.random() * (i + 1)
       );
 
-    const temp = array[i];
+    const temporary =
+      array[i];
 
-    array[i] = array[j];
+    array[i] =
+      array[j];
 
-    array[j] = temp;
+    array[j] =
+      temporary;
 
   }
 
@@ -558,16 +507,20 @@ function shuffle(array) {
 }
 
 
-/* =========================
+/* =====================================
    GERAR LABIRINTO
-========================= */
+===================================== */
 
 function generateMaze() {
 
+
+  /* -----------------------------
+     CRIA O MAPA COMPLETAMENTE
+     PREENCHIDO COM PAREDES
+  ----------------------------- */
+
   mazeMap = [];
 
-
-  /* Criar todas as paredes */
 
   for (
     let row = 0;
@@ -576,6 +529,7 @@ function generateMaze() {
   ) {
 
     mazeMap[row] = [];
+
 
     for (
       let col = 0;
@@ -590,11 +544,23 @@ function generateMaze() {
   }
 
 
-  /* =========================
-     CRIAR CAMINHOS PRINCIPAIS
-  ========================= */
+  /* -----------------------------
+     ALGORITMO RECURSIVE BACKTRACKER
+
+     Ele cria um "perfect maze".
+
+     Isso significa:
+
+     - caminhos com 1 bloco
+     - paredes entre os caminhos
+     - sem áreas abertas
+     - sem buracos largos
+     - sem dois caminhos diferentes
+       chegando à saída
+  ----------------------------- */
 
   function carve(row, col) {
+
 
     mazeMap[row][col] = ".";
 
@@ -614,38 +580,74 @@ function generateMaze() {
       of directions
     ) {
 
-      const dr = direction[0];
-      const dc = direction[1];
+      const dr =
+        direction[0];
 
-      const newRow =
+      const dc =
+        direction[1];
+
+
+      const nextRow =
         row + dr;
 
-      const newCol =
+      const nextCol =
         col + dc;
 
 
+      /*
+        Mantém uma borda de parede
+        ao redor do labirinto.
+      */
+
       if (
 
-        newRow > 0 &&
-        newRow < ROWS - 1 &&
+        nextRow <= 0 ||
+        nextRow >= ROWS - 1 ||
 
-        newCol > 0 &&
-        newCol < COLS - 1 &&
-
-        mazeMap[newRow][newCol] === "#"
+        nextCol <= 0 ||
+        nextCol >= COLS - 1
 
       ) {
 
-        mazeMap[
-          row + dr / 2
-        ][
-          col + dc / 2
-        ] = ".";
+        continue;
+
+      }
+
+
+      /*
+        Só entra em uma célula
+        que ainda não foi visitada.
+      */
+
+      if (
+
+        mazeMap[nextRow][nextCol] === "#"
+
+      ) {
+
+
+        /*
+          Abre apenas UM bloco
+          entre as células.
+
+          Isso mantém a largura
+          do corredor em 1.
+        */
+
+        const middleRow =
+          row + dr / 2;
+
+        const middleCol =
+          col + dc / 2;
+
+
+        mazeMap[middleRow][middleCol] =
+          ".";
 
 
         carve(
-          newRow,
-          newCol
+          nextRow,
+          nextCol
         );
 
       }
@@ -655,141 +657,37 @@ function generateMaze() {
   }
 
 
-  /* Criar estrutura principal */
+  /* Início da geração */
 
   carve(1, 1);
 
 
-  /* Definir início */
+  /* -----------------------------
+     DEFINE O INÍCIO
+  ----------------------------- */
+
+  playerRow = 1;
+  playerCol = 1;
 
   mazeMap[1][1] = "S";
 
 
-  /* =========================
-     CRIAR CAMINHOS ALTERNATIVOS
-  ========================= */
+  /* -----------------------------
+     ENCONTRA O PONTO MAIS DISTANTE
+     USANDO BREADTH-FIRST SEARCH
+  ----------------------------- */
 
-  const attempts = 35;
+  const visited =
+    Array.from(
 
+      {
+        length: ROWS
+      },
 
-  for (
-    let i = 0;
-    i < attempts;
-    i++
-  ) {
+      () =>
+        Array(COLS).fill(false)
 
-    const row =
-
-      Math.floor(
-        Math.random() *
-        (ROWS - 2)
-      ) + 1;
-
-
-    const col =
-
-      Math.floor(
-        Math.random() *
-        (COLS - 2)
-      ) + 1;
-
-
-    if (
-      mazeMap[row][col] !== "#"
-    ) {
-      continue;
-    }
-
-
-    const up =
-      mazeMap[row - 1][col] !== "#";
-
-
-    const down =
-      mazeMap[row + 1][col] !== "#";
-
-
-    const left =
-      mazeMap[row][col - 1] !== "#";
-
-
-    const right =
-      mazeMap[row][col + 1] !== "#";
-
-
-    /* Abrir conexões horizontais */
-
-    if (
-      left &&
-      right
-    ) {
-
-      mazeMap[row][col] = ".";
-
-    }
-
-
-    /* Abrir conexões verticais */
-
-    else if (
-      up &&
-      down
-    ) {
-
-      mazeMap[row][col] = ".";
-
-    }
-
-
-    /* Criar bifurcações */
-
-    else if (
-
-      Math.random() < 0.35 &&
-
-      (
-        (up && left) ||
-        (up && right) ||
-        (down && left) ||
-        (down && right)
-      )
-
-    ) {
-
-      mazeMap[row][col] = ".";
-
-    }
-
-  }
-
-
-  /* =========================
-     ENCONTRAR PONTO MAIS
-     DISTANTE DO INÍCIO
-  ========================= */
-
-  const visited = [];
-
-
-  for (
-    let row = 0;
-    row < ROWS;
-    row++
-  ) {
-
-    visited[row] = [];
-
-    for (
-      let col = 0;
-      col < COLS;
-      col++
-    ) {
-
-      visited[row][col] = false;
-
-    }
-
-  }
+    );
 
 
   const queue = [];
@@ -816,6 +714,16 @@ function generateMaze() {
   };
 
 
+  const directions = [
+
+    [-1, 0],
+    [1, 0],
+    [0, -1],
+    [0, 1]
+
+  ];
+
+
   while (
     queue.length > 0
   ) {
@@ -825,8 +733,10 @@ function generateMaze() {
 
 
     if (
+
       current.distance >
       farthest.distance
+
     ) {
 
       farthest = current;
@@ -834,69 +744,84 @@ function generateMaze() {
     }
 
 
-    const directions = [
-
-      [-1, 0],
-      [1, 0],
-      [0, -1],
-      [0, 1]
-
-    ];
-
-
     for (
       const direction
       of directions
     ) {
 
-      const newRow =
-        current.row +
+      const dr =
         direction[0];
 
+      const dc =
+        direction[1];
+
+
+      const newRow =
+        current.row + dr;
 
       const newCol =
-        current.col +
-        direction[1];
+        current.col + dc;
 
 
       if (
 
-        newRow >= 0 &&
-        newRow < ROWS &&
+        newRow < 0 ||
+        newRow >= ROWS ||
 
-        newCol >= 0 &&
-        newCol < COLS &&
-
-        !visited[newRow][newCol] &&
-
-        mazeMap[newRow][newCol] !== "#"
+        newCol < 0 ||
+        newCol >= COLS
 
       ) {
 
-        visited[newRow][newCol] = true;
-
-
-        queue.push({
-
-          row: newRow,
-
-          col: newCol,
-
-          distance:
-            current.distance + 1
-
-        });
+        continue;
 
       }
+
+
+      if (
+
+        visited[newRow][newCol]
+
+      ) {
+
+        continue;
+
+      }
+
+
+      if (
+
+        mazeMap[newRow][newCol] === "#"
+
+      ) {
+
+        continue;
+
+      }
+
+
+      visited[newRow][newCol] =
+        true;
+
+
+      queue.push({
+
+        row: newRow,
+        col: newCol,
+
+        distance:
+          current.distance + 1
+
+      });
 
     }
 
   }
 
 
-  /* =========================
-     DEFINIR SAÍDA
-  ========================= */
+  /* -----------------------------
+     DEFINE A SAÍDA
+  ----------------------------- */
 
   mazeMap[
     farthest.row
@@ -905,10 +830,7 @@ function generateMaze() {
   ] = "E";
 
 
-  /* Resetar jogador */
-
-  playerRow = 1;
-  playerCol = 1;
+  /* Reset */
 
   gameFinished = false;
   moving = false;
@@ -916,16 +838,15 @@ function generateMaze() {
 }
 
 
-/* =========================
+/* =====================================
    CONSTRUIR LABIRINTO
-========================= */
+===================================== */
 
 function buildMaze() {
 
+
   const maze =
-    document.getElementById(
-      "maze"
-    );
+    document.getElementById("maze");
 
 
   maze.innerHTML = "";
@@ -948,21 +869,24 @@ function buildMaze() {
     ) {
 
       const cell =
-        document.createElement(
-          "div"
-        );
+        document.createElement("div");
 
 
-      cell.className = "cell";
+      cell.className =
+        "cell";
 
 
-      cell.dataset.row = row;
+      cell.dataset.row =
+        row;
 
-      cell.dataset.col = col;
+      cell.dataset.col =
+        col;
 
 
       if (
+
         mazeMap[row][col] !== "#"
+
       ) {
 
         cell.classList.add(
@@ -973,7 +897,9 @@ function buildMaze() {
 
 
       if (
+
         mazeMap[row][col] === "E"
+
       ) {
 
         cell.classList.add(
@@ -995,11 +921,12 @@ function buildMaze() {
 }
 
 
-/* =========================
+/* =====================================
    DESENHAR PERSONAGEM
-========================= */
+===================================== */
 
 function drawPlayer() {
+
 
   const oldPlayer =
     document.querySelector(
@@ -1014,7 +941,7 @@ function drawPlayer() {
   }
 
 
-  const cell =
+  const currentCell =
     document.querySelector(
 
       `[data-row="${playerRow}"][data-col="${playerCol}"]`
@@ -1022,15 +949,15 @@ function drawPlayer() {
     );
 
 
-  if (!cell) {
+  if (!currentCell) {
+
     return;
+
   }
 
 
   const player =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
 
   player.className =
@@ -1058,14 +985,16 @@ function drawPlayer() {
   `;
 
 
-  cell.appendChild(player);
+  currentCell.appendChild(
+    player
+  );
 
 }
 
 
-/* =========================
-   VERIFICAR CAMINHO
-========================= */
+/* =====================================
+   VERIFICAR SE É CAMINHO
+===================================== */
 
 function isWalkable(row, col) {
 
@@ -1091,28 +1020,15 @@ function isWalkable(row, col) {
 }
 
 
-/* =========================
-   VERIFICAR BIFURCAÇÃO
-========================= */
+/* =====================================
+   VERIFICAR SE EXISTE CAMINHO LATERAL
 
-/*
-  Esta função verifica se,
-  enquanto o personagem está
-  seguindo em uma direção,
-  apareceu um novo caminho lateral.
+   Essa é a parte que impede
+   o personagem de passar direto
+   por uma entrada.
+===================================== */
 
-  Exemplo:
-
-      ↓
-      ↓
-  ----+----  ← para aqui
-      ↓
-
-  Assim o personagem não
-  passa direto pela entrada.
-*/
-
-function hasAlternativePath(
+function hasSidePath(
   row,
   col,
   dr,
@@ -1121,16 +1037,12 @@ function hasAlternativePath(
 
 
   /*
-    Movimento vertical.
+    Movimento vertical:
 
-    Se estiver indo para cima
-    ou para baixo, verifica
-    esquerda e direita.
+    verifica esquerda e direita.
   */
 
-  if (
-    dr !== 0
-  ) {
+  if (dr !== 0) {
 
     const left =
       isWalkable(
@@ -1146,29 +1058,21 @@ function hasAlternativePath(
       );
 
 
-    if (
+    return (
       left ||
       right
-    ) {
-
-      return true;
-
-    }
+    );
 
   }
 
 
   /*
-    Movimento horizontal.
+    Movimento horizontal:
 
-    Se estiver indo para
-    esquerda ou direita,
     verifica cima e baixo.
   */
 
-  if (
-    dc !== 0
-  ) {
+  if (dc !== 0) {
 
     const up =
       isWalkable(
@@ -1184,14 +1088,10 @@ function hasAlternativePath(
       );
 
 
-    if (
+    return (
       up ||
       down
-    ) {
-
-      return true;
-
-    }
+    );
 
   }
 
@@ -1201,35 +1101,22 @@ function hasAlternativePath(
 }
 
 
-/* =========================
-   MOVIMENTO CONTÍNUO
-========================= */
-
-/*
-  O personagem:
-
-  1. Anda continuamente
-     pelo corredor;
-
-  2. Para na parede;
-
-  3. Para quando encontra
-     uma bifurcação;
-
-  4. Para antes de ignorar
-     uma entrada lateral;
-
-  5. Finaliza ao chegar
-     na saída.
-*/
+/* =====================================
+   MOVIMENTAÇÃO
+===================================== */
 
 function move(direction) {
 
+
   if (
+
     gameFinished ||
     moving
+
   ) {
+
     return;
+
   }
 
 
@@ -1237,49 +1124,53 @@ function move(direction) {
   let dc = 0;
 
 
-  if (
-    direction === "up"
-  ) {
+  if (direction === "up") {
+
     dr = -1;
+
   }
 
 
-  if (
-    direction === "down"
-  ) {
+  if (direction === "down") {
+
     dr = 1;
+
   }
 
 
-  if (
-    direction === "left"
-  ) {
+  if (direction === "left") {
+
     dc = -1;
+
   }
 
 
-  if (
-    direction === "right"
-  ) {
+  if (direction === "right") {
+
     dc = 1;
+
   }
 
 
-  const nextRow =
+  /*
+    Verifica se já existe caminho
+    na direção escolhida.
+  */
+
+  const firstRow =
     playerRow + dr;
 
-
-  const nextCol =
+  const firstCol =
     playerCol + dc;
 
 
-  /* Não começa contra parede */
-
   if (
+
     !isWalkable(
-      nextRow,
-      nextCol
+      firstRow,
+      firstCol
     )
+
   ) {
 
     return;
@@ -1290,35 +1181,33 @@ function move(direction) {
   moving = true;
 
 
-  const moveInterval =
+  const movement =
     setInterval(() => {
 
 
-      const testRow =
+      const nextRow =
         playerRow + dr;
 
-
-      const testCol =
+      const nextCol =
         playerCol + dc;
 
 
       /*
-        Encontrou uma parede.
+        CHEGOU NA PAREDE
       */
 
       if (
 
         !isWalkable(
-          testRow,
-          testCol
+          nextRow,
+          nextCol
         )
 
       ) {
 
         clearInterval(
-          moveInterval
+          movement
         );
-
 
         moving = false;
 
@@ -1328,12 +1217,14 @@ function move(direction) {
 
 
       /*
-        Move o personagem
+        AVANÇA
       */
 
-      playerRow = testRow;
+      playerRow =
+        nextRow;
 
-      playerCol = testCol;
+      playerCol =
+        nextCol;
 
 
       drawPlayer();
@@ -1345,18 +1236,13 @@ function move(direction) {
 
       if (
 
-        mazeMap[
-          playerRow
-        ][
-          playerCol
-        ] === "E"
+        mazeMap[playerRow][playerCol] === "E"
 
       ) {
 
         clearInterval(
-          moveInterval
+          movement
         );
-
 
         moving = false;
 
@@ -1369,26 +1255,21 @@ function move(direction) {
 
 
       /*
-        CHEGOU A UMA
-        BIFURCAÇÃO
+        ENCONTROU UMA ENTRADA
+        OU BIFURCAÇÃO LATERAL.
 
-        Para o personagem.
-
-        Isso impede que ele
-        passe direto por uma
-        entrada lateral.
+        PARA PARA O JOGADOR
+        ESCOLHER A PRÓXIMA DIREÇÃO.
       */
 
       if (
 
-        hasAlternativePath(
+        hasSidePath(
 
           playerRow,
-
           playerCol,
 
           dr,
-
           dc
 
         )
@@ -1396,9 +1277,8 @@ function move(direction) {
       ) {
 
         clearInterval(
-          moveInterval
+          movement
         );
-
 
         moving = false;
 
@@ -1407,120 +1287,99 @@ function move(direction) {
       }
 
 
-    }, 65);
+    }, 55);
 
 }
 
 
-/* =========================
-   FINALIZAR JOGO
-========================= */
+/* =====================================
+   INICIAR JOGO
+===================================== */
+
+function startGame() {
+
+
+  generateMaze();
+
+  buildMaze();
+
+
+  document
+    .getElementById("introScreen")
+    .classList
+    .remove("active");
+
+
+  document
+    .getElementById("gameScreen")
+    .classList
+    .add("active");
+
+}
+
+
+/* =====================================
+   FINALIZAR
+===================================== */
 
 function finishGame() {
+
 
   gameFinished = true;
 
 
   setTimeout(() => {
 
+
     document
-      .getElementById(
-        "gameScreen"
-      )
+      .getElementById("gameScreen")
       .classList
-      .remove(
-        "active"
-      );
+      .remove("active");
 
 
     document
-      .getElementById(
-        "finalScreen"
-      )
+      .getElementById("finalScreen")
       .classList
-      .add(
-        "active"
-      );
+      .add("active");
 
-  }, 400);
+
+  }, 300);
 
 }
 
 
-/* =========================
-   INICIAR JOGO
-========================= */
-
-function startGame() {
-
-  generateMaze();
-
-  buildMaze();
-
-
-  document
-    .getElementById(
-      "introScreen"
-    )
-    .classList
-    .remove(
-      "active"
-    );
-
-
-  document
-    .getElementById(
-      "gameScreen"
-    )
-    .classList
-    .add(
-      "active"
-    );
-
-}
-
-
-/* =========================
-   JOGAR NOVAMENTE
-========================= */
+/* =====================================
+   REINICIAR
+===================================== */
 
 function restartGame() {
 
+
   generateMaze();
 
   buildMaze();
 
 
   document
-    .getElementById(
-      "finalScreen"
-    )
+    .getElementById("finalScreen")
     .classList
-    .remove(
-      "active"
-    );
+    .remove("active");
 
 
   document
-    .getElementById(
-      "gameScreen"
-    )
+    .getElementById("gameScreen")
     .classList
-    .add(
-      "active"
-    );
+    .add("active");
 
 }
 
 
-/* =========================
-   CONTROLE POR DESLIZE
-========================= */
+/* =====================================
+   CONTROLE POR TOQUE
+===================================== */
 
 const mazeElement =
-  document.getElementById(
-    "maze"
-  );
+  document.getElementById("maze");
 
 
 mazeElement.addEventListener(
@@ -1529,6 +1388,7 @@ mazeElement.addEventListener(
 
   function(event) {
 
+
     const touch =
       event.touches[0];
 
@@ -1536,9 +1396,9 @@ mazeElement.addEventListener(
     touchStartX =
       touch.clientX;
 
-
     touchStartY =
       touch.clientY;
+
 
   },
 
@@ -1555,6 +1415,7 @@ mazeElement.addEventListener(
 
   function(event) {
 
+
     const touch =
       event.changedTouches[0];
 
@@ -1570,15 +1431,13 @@ mazeElement.addEventListener(
 
 
     /*
-      Ignora movimentos
-      muito pequenos.
+      Ignora toques pequenos
     */
 
     if (
 
-      Math.abs(deltaX) < 20 &&
-
-      Math.abs(deltaY) < 20
+      Math.abs(deltaX) < 15 &&
+      Math.abs(deltaY) < 15
 
     ) {
 
@@ -1588,7 +1447,7 @@ mazeElement.addEventListener(
 
 
     /*
-      Movimento horizontal
+      HORIZONTAL
     */
 
     if (
@@ -1598,19 +1457,16 @@ mazeElement.addEventListener(
 
     ) {
 
-      if (
-        deltaX > 0
-      ) {
 
-        move(
-          "right"
-        );
+      if (deltaX > 0) {
 
-      } else {
+        move("right");
 
-        move(
-          "left"
-        );
+      }
+
+      else {
+
+        move("left");
 
       }
 
@@ -1618,28 +1474,26 @@ mazeElement.addEventListener(
 
 
     /*
-      Movimento vertical
+      VERTICAL
     */
 
     else {
 
-      if (
-        deltaY > 0
-      ) {
 
-        move(
-          "down"
-        );
+      if (deltaY > 0) {
 
-      } else {
+        move("down");
 
-        move(
-          "up"
-        );
+      }
+
+      else {
+
+        move("up");
 
       }
 
     }
+
 
   },
 
@@ -1650,10 +1504,9 @@ mazeElement.addEventListener(
 );
 
 
-/* =========================
-   TECLADO
-   APENAS PARA TESTAR NO PC
-========================= */
+/* =====================================
+   TECLADO PARA TESTE NO PC
+===================================== */
 
 document.addEventListener(
 
@@ -1662,44 +1515,58 @@ document.addEventListener(
   function(event) {
 
 
-    if (
-      event.key === "ArrowUp"
-    ) {
+    if (event.key === "ArrowUp") {
 
       move("up");
 
     }
 
 
-    if (
-      event.key === "ArrowDown"
-    ) {
+    if (event.key === "ArrowDown") {
 
       move("down");
 
     }
 
 
-    if (
-      event.key === "ArrowLeft"
-    ) {
+    if (event.key === "ArrowLeft") {
 
       move("left");
 
     }
 
 
-    if (
-      event.key === "ArrowRight"
-    ) {
+    if (event.key === "ArrowRight") {
 
       move("right");
 
     }
 
+
   }
 
 );
+
+
+/* =====================================
+   BOTÕES
+===================================== */
+
+document
+  .getElementById("startButton")
+  .addEventListener(
+    "click",
+    startGame
+  );
+
+
+document
+  .getElementById("restartButton")
+  .addEventListener(
+    "click",
+    restartGame
+  );
+
 
 </script>
 
