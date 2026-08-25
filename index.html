@@ -7,321 +7,375 @@
 <title>Encontre o Caminho</title>
 
 <style>
-:root{
-  --bg:#070707;
-  --wall:#f1f1f1;
-  --path:#141414;
-  --text:#fff;
-  --muted:#9c9c9c;
-  --accent:#d6b36a;
+:root {
+  --bg: #080808;
+  --wall: #eeeeee;
+  --path: #151515;
+  --text: #ffffff;
+  --muted: #9d9d9d;
+  --accent: #d6b36a;
 }
 
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-  user-select:none;
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
-html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
-  touch-action:none;
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.screen{
-  position:fixed;
-  inset:0;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:24px;
-  background:var(--bg);
+.screen {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  background: var(--bg);
 }
 
-.screen.active{
-  display:flex;
+.screen.active {
+  display: flex;
 }
 
-.content,.final-content{
-  max-width:600px;
-  animation:fadeIn .7s ease;
+.content,
+.final-content {
+  width: 100%;
+  max-width: 620px;
+  animation: fadeIn .7s ease;
 }
 
-@keyframes fadeIn{
-  from{opacity:0;transform:scale(.96)}
-  to{opacity:1;transform:scale(1)}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .eyebrow,
 .final-small,
-.reencontro{
-  color:var(--accent);
-  font-size:11px;
-  font-weight:bold;
-  letter-spacing:4px;
-  margin-bottom:22px;
+.reencontro {
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 4px;
+  margin-bottom: 22px;
 }
 
-h1{
-  margin:0 0 22px;
-  font-size:clamp(42px,11vw,76px);
-  line-height:.96;
-  letter-spacing:-2px;
+h1 {
+  margin: 0 0 22px;
+  font-size: clamp(42px, 11vw, 76px);
+  line-height: .96;
+  letter-spacing: -2px;
 }
 
 .description,
-.final-text{
-  color:var(--muted);
-  max-width:440px;
-  margin:0 auto 38px;
-  font-size:17px;
-  line-height:1.6;
+.final-text {
+  max-width: 440px;
+  margin: 0 auto 38px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.6;
 }
 
-.main-button{
-  border:none;
-  border-radius:50px;
-  padding:18px 34px;
-  background:#fff;
-  color:#000;
-  font-size:14px;
-  font-weight:bold;
-  letter-spacing:1px;
-  cursor:pointer;
+.main-button {
+  border: none;
+  border-radius: 50px;
+  padding: 18px 34px;
+  background: white;
+  color: black;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
 }
 
-.main-button:active{
-  transform:scale(.96);
+.main-button:active {
+  transform: scale(.96);
 }
 
-/* JOGO */
+/* =========================
+   JOGO
+========================= */
 
-#gameScreen{
-  padding:0;
+#gameScreen {
+  padding: 0;
 }
 
-.game-header{
-  position:absolute;
-  top:max(18px,env(safe-area-inset-top));
-  left:0;
-  width:100%;
-  z-index:10;
-  pointer-events:none;
+.game-header {
+  position: absolute;
+  top: max(18px, env(safe-area-inset-top));
+  left: 0;
+  width: 100%;
+  z-index: 20;
+  pointer-events: none;
 }
 
-.game-title{
-  font-size:10px;
-  color:rgba(255,255,255,.5);
-  letter-spacing:3px;
+.game-title {
+  font-size: 10px;
+  color: rgba(255,255,255,.55);
+  letter-spacing: 3px;
 }
 
-.game-hint{
-  margin-top:10px;
-  font-size:11px;
-  color:rgba(255,255,255,.3);
+.game-hint {
+  margin-top: 10px;
+  font-size: 11px;
+  color: rgba(255,255,255,.35);
 }
 
-#messageBox{
-  position:absolute;
-  top:72px;
-  left:50%;
-  transform:translateX(-50%) translateY(-10px);
-  width:min(88vw,430px);
-  padding:14px 20px;
-  border-radius:18px;
-  background:rgba(0,0,0,.82);
-  border:1px solid rgba(255,255,255,.12);
-  opacity:0;
-  transition:.45s ease;
-  z-index:30;
-  pointer-events:none;
+#messageBox {
+  position: absolute;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  width: min(88vw, 430px);
+  padding: 14px 20px;
+  border-radius: 18px;
+  background: rgba(0,0,0,.78);
+  border: 1px solid rgba(255,255,255,.12);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 30;
+  transition: opacity .45s ease, transform .45s ease;
 }
 
-#messageBox.show{
-  opacity:1;
-  transform:translateX(-50%) translateY(0);
+#messageBox.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
-#messageText{
-  margin:0;
-  font-size:16px;
-  line-height:1.4;
+#messageText {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.4;
 }
 
-#mazeContainer{
-  width:100%;
-  height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:115px 12px 40px;
+/* ÁREA DO JOGO */
+
+#gameArea {
+  position: relative;
+  width: min(94vw, 650px);
+  height: min(78vh, 650px);
+  margin-top: 55px;
+  overflow: hidden;
+  background: var(--wall);
+  border: 2px solid rgba(255,255,255,.22);
+  box-shadow: 0 0 60px rgba(255,255,255,.04);
+  touch-action: none;
 }
 
-#maze{
-  width:min(96vw,650px);
-  aspect-ratio:1/1;
-  display:grid;
-  background:var(--wall);
-  border:2px solid rgba(255,255,255,.22);
-  box-shadow:0 0 60px rgba(255,255,255,.04);
-  touch-action:none;
+/* CAMINHOS */
+
+.path {
+  position: absolute;
+  background: var(--path);
 }
 
-.cell{
-  position:relative;
-  background:var(--wall);
+/* ENTRADA */
+
+.start {
+  position: absolute;
+  background: var(--path);
 }
 
-.cell.path{
-  background:var(--path);
+/* SAÍDA */
+
+.exit {
+  position: absolute;
+  background: var(--accent);
+  box-shadow: 0 0 25px rgba(214,179,106,.45);
+  animation: exitPulse 1.8s infinite;
 }
 
-.cell.exit{
-  background:var(--accent);
-  animation:exitPulse 1.5s infinite;
-}
-
-@keyframes exitPulse{
-  0%,100%{opacity:.7}
-  50%{opacity:1}
+@keyframes exitPulse {
+  0%, 100% {
+    opacity: .75;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 /* PERSONAGEM */
 
-.player{
-  position:absolute;
-  inset:8%;
-  z-index:5;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  filter:drop-shadow(0 0 6px rgba(255,255,255,.7));
-  animation:appear .3s ease;
+#player {
+  position: absolute;
+  width: 28px;
+  height: 42px;
+  z-index: 10;
+  pointer-events: none;
+  filter: drop-shadow(0 0 7px rgba(255,255,255,.8));
+  transition: none;
 }
 
-@keyframes appear{
-  from{transform:scale(.7);opacity:0}
-  to{transform:scale(1);opacity:1}
+.person {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  animation: idle 1.5s ease-in-out infinite;
 }
 
-.person{
-  position:relative;
-  width:70%;
-  height:88%;
-  animation:idle 1.8s ease-in-out infinite;
+#player.moving .person {
+  animation: walking .22s ease-in-out infinite alternate;
 }
 
-.player.walking .person{
-  animation:walk .18s ease-in-out infinite alternate;
+.head {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: white;
+  left: 7px;
+  top: 0;
 }
 
-.head{
-  position:absolute;
-  width:28%;
-  aspect-ratio:1;
-  border-radius:50%;
-  background:white;
-  top:0;
-  left:36%;
+.body {
+  position: absolute;
+  width: 20px;
+  height: 21px;
+  background: white;
+  border-radius: 50% 50% 25% 25%;
+  left: 4px;
+  top: 11px;
 }
 
-.body{
-  position:absolute;
-  width:48%;
-  height:55%;
-  background:white;
-  border-radius:45% 45% 20% 20%;
-  top:25%;
-  left:26%;
+.arm {
+  position: absolute;
+  width: 6px;
+  height: 19px;
+  background: white;
+  border-radius: 20px;
+  top: 15px;
 }
 
-.arm{
-  position:absolute;
-  width:16%;
-  height:42%;
-  background:white;
-  border-radius:50px;
-  top:32%;
+.arm.left {
+  left: 1px;
+  transform: rotate(10deg);
 }
 
-.arm.left{
-  left:14%;
-  transform:rotate(12deg);
+.arm.right {
+  right: 1px;
+  transform: rotate(-10deg);
 }
 
-.arm.right{
-  right:14%;
-  transform:rotate(-12deg);
+.leg {
+  position: absolute;
+  width: 7px;
+  height: 14px;
+  background: white;
+  border-radius: 20px;
+  top: 29px;
 }
 
-.leg{
-  position:absolute;
-  width:17%;
-  height:28%;
-  background:white;
-  border-radius:50px;
-  top:70%;
+.leg.left {
+  left: 7px;
 }
 
-.leg.left{
-  left:31%;
-  transform:rotate(6deg);
+.leg.right {
+  right: 7px;
 }
 
-.leg.right{
-  right:31%;
-  transform:rotate(-6deg);
+@keyframes idle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
 }
 
-@keyframes idle{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-3%)}
+@keyframes walking {
+  from {
+    transform: translateY(0) rotate(-1deg);
+  }
+  to {
+    transform: translateY(-3px) rotate(1deg);
+  }
 }
 
-@keyframes walk{
-  from{transform:translateY(0) rotate(-2deg)}
-  to{transform:translateY(-4%) rotate(2deg)}
+/* JOYSTICK VISUAL */
+
+#joystick {
+  position: absolute;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 15;
+  transition: opacity .2s ease;
+}
+
+#joystick.show {
+  opacity: 1;
+}
+
+#joystickKnob {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.75);
+  left: 19px;
+  top: 19px;
 }
 
 /* FINAL */
 
-.final-title{
-  font-size:clamp(45px,12vw,82px);
-  line-height:.95;
-  letter-spacing:-3px;
-  margin-bottom:28px;
+.final-title {
+  font-size: clamp(44px, 12vw, 82px);
+  line-height: .95;
+  letter-spacing: -3px;
+  margin-bottom: 28px;
 }
 
-@media(max-height:700px){
-  #mazeContainer{
-    padding-top:100px;
+@media (max-height: 700px) {
+
+  #gameArea {
+    height: min(74vh, 540px);
+    margin-top: 45px;
   }
 
-  #messageBox{
-    top:58px;
+  #messageBox {
+    top: 60px;
   }
 
-  .game-hint{
-    display:none;
+  .game-hint {
+    display: none;
   }
 }
+
 </style>
 </head>
 
 <body>
 
-<!-- INÍCIO -->
+<!-- TELA INICIAL -->
 
 <section id="introScreen" class="screen active">
+
   <div class="content">
 
-    <div class="eyebrow">UMA EXPERIÊNCIA</div>
+    <div class="eyebrow">
+      UMA EXPERIÊNCIA
+    </div>
 
     <h1>
       VOCÊ CONSEGUE<br>
@@ -339,6 +393,7 @@ h1{
     </button>
 
   </div>
+
 </section>
 
 
@@ -347,16 +402,78 @@ h1{
 <section id="gameScreen" class="screen">
 
   <div class="game-header">
-    <div class="game-title">ENCONTRE A SAÍDA</div>
-    <div class="game-hint">DESLIZE O DEDO PARA SE MOVIMENTAR</div>
+    <div class="game-title">
+      ENCONTRE O CAMINHO
+    </div>
+
+    <div class="game-hint">
+      TOQUE E ARRASTE PARA CAMINHAR
+    </div>
   </div>
 
   <div id="messageBox">
     <p id="messageText"></p>
   </div>
 
-  <div id="mazeContainer">
-    <div id="maze"></div>
+  <div id="gameArea">
+
+    <!-- Caminho principal -->
+    <div class="path" style="left:5%; top:8%; width:48%; height:12%;"></div>
+    <div class="path" style="left:41%; top:8%; width:12%; height:38%;"></div>
+    <div class="path" style="left:41%; top:34%; width:42%; height:12%;"></div>
+    <div class="path" style="left:71%; top:34%; width:12%; height:42%;"></div>
+    <div class="path" style="left:45%; top:64%; width:38%; height:12%;"></div>
+    <div class="path" style="left:45%; top:64%; width:12%; height:25%;"></div>
+    <div class="path" style="left:45%; top:77%; width:42%; height:12%;"></div>
+
+    <!-- Beco sem saída 1 -->
+    <div class="path" style="left:18%; top:8%; width:12%; height:25%;"></div>
+    <div class="path" style="left:18%; top:21%; width:22%; height:12%;"></div>
+
+    <!-- Beco sem saída 2 -->
+    <div class="path" style="left:41%; top:21%; width:27%; height:12%;"></div>
+    <div class="path" style="left:56%; top:12%; width:12%; height:21%;"></div>
+
+    <!-- Beco sem saída 3 -->
+    <div class="path" style="left:58%; top:34%; width:12%; height:18%;"></div>
+    <div class="path" style="left:58%; top:40%; width:22%; height:12%;"></div>
+
+    <!-- Beco sem saída 4 -->
+    <div class="path" style="left:71%; top:52%; width:20%; height:12%;"></div>
+
+    <!-- Beco sem saída 5 -->
+    <div class="path" style="left:26%; top:64%; width:31%; height:12%;"></div>
+    <div class="path" style="left:26%; top:52%; width:12%; height:24%;"></div>
+
+    <!-- Entrada -->
+    <div class="start" id="startArea"
+      style="left:5%; top:8%; width:12%; height:12%;">
+    </div>
+
+    <!-- Saída -->
+    <div class="exit" id="exitArea"
+      style="left:75%; top:77%; width:12%; height:12%;">
+    </div>
+
+    <!-- Personagem -->
+    <div id="player">
+
+      <div class="person">
+        <div class="head"></div>
+        <div class="body"></div>
+        <div class="arm left"></div>
+        <div class="arm right"></div>
+        <div class="leg left"></div>
+        <div class="leg right"></div>
+      </div>
+
+    </div>
+
+    <!-- Joystick -->
+    <div id="joystick">
+      <div id="joystickKnob"></div>
+    </div>
+
   </div>
 
 </section>
@@ -365,6 +482,7 @@ h1{
 <!-- FINAL 1 -->
 
 <section id="finalScreen" class="screen">
+
   <div class="final-content">
 
     <div class="final-small">
@@ -385,12 +503,14 @@ h1{
     </button>
 
   </div>
+
 </section>
 
 
 <!-- FINAL 2 -->
 
 <section id="messageScreen" class="screen">
+
   <div class="final-content">
 
     <div class="reencontro">
@@ -414,270 +534,425 @@ h1{
     </button>
 
   </div>
+
 </section>
 
 
 <script>
 
-/*
-# = parede
-. = caminho
-S = início
-E = saída
-*/
+/* ==============================
+   ELEMENTOS
+============================== */
 
-const mazeMap = [
-"#########################",
-"#S....#.......#.........#",
-"#####.#.#####.#.#######.#",
-"#.....#.....#.#.......#.#",
-"#.#########.#.#######.#.#",
-"#.#.......#.#.......#.#.#",
-"#.#.#####.#.#######.#.#.#",
-"#...#...#.#.....#...#...#",
-"#####.#.#.#####.#.#####.#",
-"#.....#.#.....#.#.....#.#",
-"#.#####.#####.#.#####.#.#",
-"#.#.........#.#.....#.#.#",
-"#.#.#######.#.#####.#.#.#",
-"#.#.#.....#.#.....#.#...#",
-"#...#.###.#.#####.#.#####",
-"#####.#...#.....#.#.....#",
-"#.....#.#######.#.#####.#",
-"#.#####.......#.#.....#.#",
-"#.#.....#####.#.#####.#.#",
-"#.#.###.....#.#.....#.#.#",
-"#.#.#.#####.#.#####.#.#.#",
-"#...#.....#.#.......#...#",
-"#########.#.###########.#",
-"#.........#.............E",
-"#########################"
-];
+const gameArea = document.getElementById("gameArea");
+const playerEl = document.getElementById("player");
+const joystick = document.getElementById("joystick");
+const joystickKnob = document.getElementById("joystickKnob");
+const exitArea = document.getElementById("exitArea");
 
-const rows = mazeMap.length;
-const cols = mazeMap[0].length;
-
-let player = { row: 1, col: 1 };
-
-let gameStarted = false;
-let gameFinished = false;
-let isMoving = false;
-
-let touchStartX = 0;
-let touchStartY = 0;
-
-const mazeElement = document.getElementById("maze");
 const messageBox = document.getElementById("messageBox");
 const messageText = document.getElementById("messageText");
 
-const checkpoints = [
-  {
-    row:3,
-    col:5,
-    message:"Às vezes, a gente se perde."
-  },
-  {
-    row:7,
-    col:9,
-    message:"Tentamos encontrar outros caminhos."
-  },
-  {
-    row:13,
-    col:11,
-    message:"Nos afastamos sem perceber."
-  },
-  {
-    row:21,
-    col:19,
-    message:"Mas sempre existe um caminho de volta."
-  }
-];
 
-const triggeredMessages = new Set();
+/* ==============================
+   POSIÇÃO DO JOGADOR
+============================== */
+
+let player = {
+  x: 0,
+  y: 0,
+  width: 28,
+  height: 42
+};
+
+let gameStarted = false;
+let gameFinished = false;
+
+let controlling = false;
+
+let controlStartX = 0;
+let controlStartY = 0;
+
+let directionX = 0;
+let directionY = 0;
+
+let lastTime = 0;
 
 
-function buildMaze(){
+/* ==============================
+   INICIAR JOGO
+============================== */
 
-  mazeElement.innerHTML="";
+function resetPlayer() {
 
-  mazeElement.style.gridTemplateColumns =
-    `repeat(${cols}, 1fr)`;
+  const area = gameArea.getBoundingClientRect();
 
-  mazeElement.style.gridTemplateRows =
-    `repeat(${rows}, 1fr)`;
-
-  for(let row=0;row<rows;row++){
-
-    for(let col=0;col<cols;col++){
-
-      const cell=document.createElement("div");
-
-      cell.classList.add("cell");
-
-      const value=mazeMap[row][col];
-
-      if(value==="." || value==="S" || value==="E"){
-        cell.classList.add("path");
-      }
-
-      if(value==="E"){
-        cell.classList.add("exit");
-      }
-
-      cell.dataset.row=row;
-      cell.dataset.col=col;
-
-      mazeElement.appendChild(cell);
-    }
-  }
+  player.x = area.width * 0.075;
+  player.y = area.height * 0.10;
 
   updatePlayer();
+
 }
 
 
-function updatePlayer(){
+function updatePlayer() {
 
-  document
-    .querySelectorAll(".player")
-    .forEach(el=>el.remove());
+  playerEl.style.left = player.x + "px";
+  playerEl.style.top = player.y + "px";
 
-  const cell=document.querySelector(
-    `[data-row="${player.row}"][data-col="${player.col}"]`
-  );
-
-  if(!cell) return;
-
-  const character=document.createElement("div");
-
-  character.className="player";
-
-  character.innerHTML=`
-    <div class="person">
-      <div class="head"></div>
-      <div class="body"></div>
-      <div class="arm left"></div>
-      <div class="arm right"></div>
-      <div class="leg left"></div>
-      <div class="leg right"></div>
-    </div>
-  `;
-
-  cell.appendChild(character);
 }
 
 
-function movePlayer(direction){
+/* ==============================
+   COLISÃO COM CAMINHOS
+============================== */
 
-  if(!gameStarted || gameFinished || isMoving) return;
+function canMoveTo(newX, newY) {
 
-  let newRow=player.row;
-  let newCol=player.col;
+  const playerRect = {
+    left: newX + 7,
+    top: newY + 5,
+    right: newX + player.width - 7,
+    bottom: newY + player.height - 4
+  };
 
-  if(direction==="up") newRow--;
-  if(direction==="down") newRow++;
-  if(direction==="left") newCol--;
-  if(direction==="right") newCol++;
+  const paths = document.querySelectorAll(".path, .start, .exit");
 
-  if(
-    newRow<0 ||
-    newRow>=rows ||
-    newCol<0 ||
-    newCol>=cols
-  ){
-    return;
+  for (const path of paths) {
+
+    const areaRect = gameArea.getBoundingClientRect();
+    const rect = path.getBoundingClientRect();
+
+    const relative = {
+      left: rect.left - areaRect.left,
+      top: rect.top - areaRect.top,
+      right: rect.right - areaRect.left,
+      bottom: rect.bottom - areaRect.top
+    };
+
+    const inside =
+      playerRect.left >= relative.left &&
+      playerRect.right <= relative.right &&
+      playerRect.top >= relative.top &&
+      playerRect.bottom <= relative.bottom;
+
+    if (inside) {
+      return true;
+    }
+
   }
 
-  const destination=mazeMap[newRow][newCol];
+  return false;
 
-  if(destination==="#"){
-    return;
-  }
+}
 
-  isMoving=true;
 
-  const oldPlayer=document.querySelector(".player");
+/* ==============================
+   MOVIMENTO CONTÍNUO
+============================== */
 
-  if(oldPlayer){
-    oldPlayer.classList.add("walking");
-  }
+function gameLoop(time) {
 
-  player.row=newRow;
-  player.col=newCol;
+  if (!lastTime) lastTime = time;
 
-  setTimeout(()=>{
+  const delta = (time - lastTime) / 1000;
+
+  lastTime = time;
+
+  if (
+    gameStarted &&
+    !gameFinished &&
+    controlling
+  ) {
+
+    const speed = 140;
+
+    let newX =
+      player.x +
+      directionX * speed * delta;
+
+    let newY =
+      player.y +
+      directionY * speed * delta;
+
+
+    /* Movimento separado nos eixos
+       para deslizar naturalmente
+       pelas paredes */
+
+    if (canMoveTo(newX, player.y)) {
+      player.x = newX;
+    }
+
+    if (canMoveTo(player.x, newY)) {
+      player.y = newY;
+    }
 
     updatePlayer();
 
-    isMoving=false;
-
-    checkMessages();
     checkExit();
 
-  },90);
-}
+  }
 
-
-function checkMessages(){
-
-  checkpoints.forEach((checkpoint,index)=>{
-
-    if(
-      player.row===checkpoint.row &&
-      player.col===checkpoint.col &&
-      !triggeredMessages.has(index)
-    ){
-
-      triggeredMessages.add(index);
-
-      showMessage(checkpoint.message);
-    }
-
-  });
+  requestAnimationFrame(gameLoop);
 
 }
 
+requestAnimationFrame(gameLoop);
 
-function showMessage(message){
 
-  messageText.textContent=message;
+/* ==============================
+   TOQUE
+============================== */
 
-  messageBox.classList.add("show");
+function startControl(clientX, clientY) {
 
-  setTimeout(()=>{
-    messageBox.classList.remove("show");
-  },3200);
+  if (!gameStarted || gameFinished) return;
+
+  controlling = true;
+
+  controlStartX = clientX;
+  controlStartY = clientY;
+
+  const rect = gameArea.getBoundingClientRect();
+
+  joystick.style.left =
+    (clientX - rect.left) + "px";
+
+  joystick.style.top =
+    (clientY - rect.top) + "px";
+
+  joystick.classList.add("show");
+
+  playerEl.classList.add("moving");
 
 }
 
 
-function checkExit(){
+function moveControl(clientX, clientY) {
 
-  if(mazeMap[player.row][player.col]==="E"){
+  if (!controlling) return;
 
-    gameFinished=true;
+  let dx = clientX - controlStartX;
+  let dy = clientY - controlStartY;
 
-    setTimeout(()=>{
+  const distance =
+    Math.sqrt(dx * dx + dy * dy);
 
-      document
-        .getElementById("gameScreen")
-        .classList.remove("active");
+  const maxDistance = 34;
 
-      document
-        .getElementById("finalScreen")
-        .classList.add("active");
+  if (distance > maxDistance) {
 
-    },600);
+    dx = dx / distance * maxDistance;
+    dy = dy / distance * maxDistance;
+
+  }
+
+  joystickKnob.style.transform =
+    `translate(${dx}px, ${dy}px)`;
+
+
+  const strength =
+    Math.min(distance / 70, 1);
+
+  if (distance > 5) {
+
+    directionX =
+      (clientX - controlStartX) /
+      distance *
+      strength;
+
+    directionY =
+      (clientY - controlStartY) /
+      distance *
+      strength;
+
+  } else {
+
+    directionX = 0;
+    directionY = 0;
 
   }
 
 }
 
 
-/* INICIAR */
+function stopControl() {
+
+  controlling = false;
+
+  directionX = 0;
+  directionY = 0;
+
+  joystick.classList.remove("show");
+
+  joystickKnob.style.transform =
+    "translate(0,0)";
+
+  playerEl.classList.remove("moving");
+
+}
+
+
+/* TOUCH */
+
+gameArea.addEventListener(
+  "touchstart",
+  event => {
+
+    const touch = event.touches[0];
+
+    startControl(
+      touch.clientX,
+      touch.clientY
+    );
+
+  },
+  { passive: true }
+);
+
+
+gameArea.addEventListener(
+  "touchmove",
+  event => {
+
+    const touch = event.touches[0];
+
+    moveControl(
+      touch.clientX,
+      touch.clientY
+    );
+
+  },
+  { passive: true }
+);
+
+
+gameArea.addEventListener(
+  "touchend",
+  stopControl
+);
+
+gameArea.addEventListener(
+  "touchcancel",
+  stopControl
+);
+
+
+/* MOUSE PARA TESTE */
+
+gameArea.addEventListener(
+  "mousedown",
+  event => {
+
+    startControl(
+      event.clientX,
+      event.clientY
+    );
+
+  }
+);
+
+
+window.addEventListener(
+  "mousemove",
+  event => {
+
+    if (controlling) {
+
+      moveControl(
+        event.clientX,
+        event.clientY
+      );
+
+    }
+
+  }
+);
+
+
+window.addEventListener(
+  "mouseup",
+  stopControl
+);
+
+
+/* ==============================
+   VERIFICAR SAÍDA
+============================== */
+
+function checkExit() {
+
+  const areaRect =
+    gameArea.getBoundingClientRect();
+
+  const exitRect =
+    exitArea.getBoundingClientRect();
+
+  const exitLeft =
+    exitRect.left - areaRect.left;
+
+  const exitTop =
+    exitRect.top - areaRect.top;
+
+  const exitRight =
+    exitRect.right - areaRect.left;
+
+  const exitBottom =
+    exitRect.bottom - areaRect.top;
+
+
+  const centerX =
+    player.x + player.width / 2;
+
+  const centerY =
+    player.y + player.height / 2;
+
+
+  if (
+    centerX > exitLeft &&
+    centerX < exitRight &&
+    centerY > exitTop &&
+    centerY < exitBottom
+  ) {
+
+    finishGame();
+
+  }
+
+}
+
+
+function finishGame() {
+
+  if (gameFinished) return;
+
+  gameFinished = true;
+
+  stopControl();
+
+  setTimeout(() => {
+
+    document
+      .getElementById("gameScreen")
+      .classList.remove("active");
+
+    document
+      .getElementById("finalScreen")
+      .classList.add("active");
+
+  }, 500);
+
+}
+
+
+/* ==============================
+   INICIAR
+============================== */
 
 document
   .getElementById("startButton")
-  .addEventListener("click",()=>{
+  .addEventListener("click", () => {
 
     document
       .getElementById("introScreen")
@@ -687,106 +962,21 @@ document
       .getElementById("gameScreen")
       .classList.add("active");
 
-    gameStarted=true;
-    gameFinished=false;
+    gameStarted = true;
+    gameFinished = false;
 
-    buildMaze();
+    setTimeout(resetPlayer, 100);
 
   });
 
 
-/* CONTROLE POR DESLIZE */
-
-mazeElement.addEventListener(
-  "touchstart",
-  event=>{
-
-    const touch=event.touches[0];
-
-    touchStartX=touch.clientX;
-    touchStartY=touch.clientY;
-
-  },
-  {passive:true}
-);
-
-
-mazeElement.addEventListener(
-  "touchend",
-  event=>{
-
-    const touch=event.changedTouches[0];
-
-    const deltaX=
-      touch.clientX-touchStartX;
-
-    const deltaY=
-      touch.clientY-touchStartY;
-
-    const minSwipe=18;
-
-    if(
-      Math.abs(deltaX)<minSwipe &&
-      Math.abs(deltaY)<minSwipe
-    ){
-      return;
-    }
-
-    if(Math.abs(deltaX)>Math.abs(deltaY)){
-
-      if(deltaX>0){
-        movePlayer("right");
-      }else{
-        movePlayer("left");
-      }
-
-    }else{
-
-      if(deltaY>0){
-        movePlayer("down");
-      }else{
-        movePlayer("up");
-      }
-
-    }
-
-  },
-  {passive:true}
-);
-
-
-/* TECLADO PARA TESTE NO COMPUTADOR */
-
-document.addEventListener("keydown",event=>{
-
-  const directions={
-    arrowup:"up",
-    w:"up",
-    arrowdown:"down",
-    s:"down",
-    arrowleft:"left",
-    a:"left",
-    arrowright:"right",
-    d:"right"
-  };
-
-  const key=event.key.toLowerCase();
-
-  if(directions[key]){
-
-    event.preventDefault();
-
-    movePlayer(directions[key]);
-  }
-
-});
-
-
-/* CONTINUAR */
+/* ==============================
+   CONTINUAR
+============================== */
 
 document
   .getElementById("continueButton")
-  .addEventListener("click",()=>{
+  .addEventListener("click", () => {
 
     document
       .getElementById("finalScreen")
@@ -799,18 +989,13 @@ document
   });
 
 
-/* REINICIAR */
+/* ==============================
+   REINICIAR
+============================== */
 
 document
   .getElementById("restartButton")
-  .addEventListener("click",()=>{
-
-    player={row:1,col:1};
-
-    triggeredMessages.clear();
-
-    gameFinished=false;
-    gameStarted=true;
+  .addEventListener("click", () => {
 
     document
       .getElementById("messageScreen")
@@ -820,9 +1005,28 @@ document
       .getElementById("gameScreen")
       .classList.add("active");
 
-    buildMaze();
+    gameStarted = true;
+    gameFinished = false;
+
+    setTimeout(resetPlayer, 100);
 
   });
+
+
+/* ==============================
+   REDIMENSIONAMENTO
+============================== */
+
+window.addEventListener(
+  "resize",
+  () => {
+
+    if (gameStarted && !gameFinished) {
+      resetPlayer();
+    }
+
+  }
+);
 
 </script>
 
