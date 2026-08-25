@@ -7,347 +7,321 @@
 <title>Encontre o Caminho</title>
 
 <style>
-:root {
-  --bg: #080808;
-  --wall: #f1f1f1;
-  --path: #151515;
-  --text: #ffffff;
-  --muted: #9e9e9e;
-  --accent: #d6b36a;
+:root{
+  --bg:#070707;
+  --wall:#f1f1f1;
+  --path:#141414;
+  --text:#fff;
+  --muted:#9c9c9c;
+  --accent:#d6b36a;
 }
 
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
 }
 
-html, body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, Helvetica, sans-serif;
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  touch-action:none;
 }
 
-.screen {
-  position: fixed;
-  inset: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 24px;
-  background: var(--bg);
+.screen{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:24px;
+  background:var(--bg);
 }
 
-.screen.active {
-  display: flex;
+.screen.active{
+  display:flex;
 }
 
-.content {
-  max-width: 600px;
-  animation: fadeIn .8s ease;
+.content,.final-content{
+  max-width:600px;
+  animation:fadeIn .7s ease;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(.96);
+@keyframes fadeIn{
+  from{opacity:0;transform:scale(.96)}
+  to{opacity:1;transform:scale(1)}
+}
+
+.eyebrow,
+.final-small,
+.reencontro{
+  color:var(--accent);
+  font-size:11px;
+  font-weight:bold;
+  letter-spacing:4px;
+  margin-bottom:22px;
+}
+
+h1{
+  margin:0 0 22px;
+  font-size:clamp(42px,11vw,76px);
+  line-height:.96;
+  letter-spacing:-2px;
+}
+
+.description,
+.final-text{
+  color:var(--muted);
+  max-width:440px;
+  margin:0 auto 38px;
+  font-size:17px;
+  line-height:1.6;
+}
+
+.main-button{
+  border:none;
+  border-radius:50px;
+  padding:18px 34px;
+  background:#fff;
+  color:#000;
+  font-size:14px;
+  font-weight:bold;
+  letter-spacing:1px;
+  cursor:pointer;
+}
+
+.main-button:active{
+  transform:scale(.96);
+}
+
+/* JOGO */
+
+#gameScreen{
+  padding:0;
+}
+
+.game-header{
+  position:absolute;
+  top:max(18px,env(safe-area-inset-top));
+  left:0;
+  width:100%;
+  z-index:10;
+  pointer-events:none;
+}
+
+.game-title{
+  font-size:10px;
+  color:rgba(255,255,255,.5);
+  letter-spacing:3px;
+}
+
+.game-hint{
+  margin-top:10px;
+  font-size:11px;
+  color:rgba(255,255,255,.3);
+}
+
+#messageBox{
+  position:absolute;
+  top:72px;
+  left:50%;
+  transform:translateX(-50%) translateY(-10px);
+  width:min(88vw,430px);
+  padding:14px 20px;
+  border-radius:18px;
+  background:rgba(0,0,0,.82);
+  border:1px solid rgba(255,255,255,.12);
+  opacity:0;
+  transition:.45s ease;
+  z-index:30;
+  pointer-events:none;
+}
+
+#messageBox.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+#messageText{
+  margin:0;
+  font-size:16px;
+  line-height:1.4;
+}
+
+#mazeContainer{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:115px 12px 40px;
+}
+
+#maze{
+  width:min(96vw,650px);
+  aspect-ratio:1/1;
+  display:grid;
+  background:var(--wall);
+  border:2px solid rgba(255,255,255,.22);
+  box-shadow:0 0 60px rgba(255,255,255,.04);
+  touch-action:none;
+}
+
+.cell{
+  position:relative;
+  background:var(--wall);
+}
+
+.cell.path{
+  background:var(--path);
+}
+
+.cell.exit{
+  background:var(--accent);
+  animation:exitPulse 1.5s infinite;
+}
+
+@keyframes exitPulse{
+  0%,100%{opacity:.7}
+  50%{opacity:1}
+}
+
+/* PERSONAGEM */
+
+.player{
+  position:absolute;
+  inset:8%;
+  z-index:5;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  filter:drop-shadow(0 0 6px rgba(255,255,255,.7));
+  animation:appear .3s ease;
+}
+
+@keyframes appear{
+  from{transform:scale(.7);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
+.person{
+  position:relative;
+  width:70%;
+  height:88%;
+  animation:idle 1.8s ease-in-out infinite;
+}
+
+.player.walking .person{
+  animation:walk .18s ease-in-out infinite alternate;
+}
+
+.head{
+  position:absolute;
+  width:28%;
+  aspect-ratio:1;
+  border-radius:50%;
+  background:white;
+  top:0;
+  left:36%;
+}
+
+.body{
+  position:absolute;
+  width:48%;
+  height:55%;
+  background:white;
+  border-radius:45% 45% 20% 20%;
+  top:25%;
+  left:26%;
+}
+
+.arm{
+  position:absolute;
+  width:16%;
+  height:42%;
+  background:white;
+  border-radius:50px;
+  top:32%;
+}
+
+.arm.left{
+  left:14%;
+  transform:rotate(12deg);
+}
+
+.arm.right{
+  right:14%;
+  transform:rotate(-12deg);
+}
+
+.leg{
+  position:absolute;
+  width:17%;
+  height:28%;
+  background:white;
+  border-radius:50px;
+  top:70%;
+}
+
+.leg.left{
+  left:31%;
+  transform:rotate(6deg);
+}
+
+.leg.right{
+  right:31%;
+  transform:rotate(-6deg);
+}
+
+@keyframes idle{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-3%)}
+}
+
+@keyframes walk{
+  from{transform:translateY(0) rotate(-2deg)}
+  to{transform:translateY(-4%) rotate(2deg)}
+}
+
+/* FINAL */
+
+.final-title{
+  font-size:clamp(45px,12vw,82px);
+  line-height:.95;
+  letter-spacing:-3px;
+  margin-bottom:28px;
+}
+
+@media(max-height:700px){
+  #mazeContainer{
+    padding-top:100px;
   }
 
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.eyebrow {
-  color: var(--accent);
-  font-size: 11px;
-  font-weight: bold;
-  letter-spacing: 4px;
-  margin-bottom: 22px;
-}
-
-h1 {
-  margin: 0 0 22px;
-  font-size: clamp(42px, 11vw, 76px);
-  line-height: .96;
-  letter-spacing: -2px;
-}
-
-.description {
-  color: var(--muted);
-  max-width: 440px;
-  margin: 0 auto 38px;
-  font-size: 17px;
-  line-height: 1.6;
-}
-
-.main-button {
-  border: none;
-  border-radius: 50px;
-  padding: 18px 34px;
-  background: white;
-  color: black;
-  font-size: 14px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  cursor: pointer;
-}
-
-.main-button:active {
-  transform: scale(.96);
-}
-
-/* =========================
-   JOGO
-========================= */
-
-#gameScreen {
-  padding: 0;
-}
-
-.game-header {
-  position: absolute;
-  top: max(15px, env(safe-area-inset-top));
-  left: 0;
-  width: 100%;
-  z-index: 10;
-}
-
-.game-title {
-  font-size: 10px;
-  color: rgba(255,255,255,.55);
-  letter-spacing: 3px;
-}
-
-#messageBox {
-  position: absolute;
-  top: 52px;
-  left: 50%;
-  transform: translateX(-50%) translateY(-10px);
-
-  width: min(88vw, 440px);
-
-  padding: 15px 20px;
-  border-radius: 18px;
-
-  background: rgba(0,0,0,.78);
-  border: 1px solid rgba(255,255,255,.12);
-
-  opacity: 0;
-  pointer-events: none;
-
-  transition: .5s ease;
-  z-index: 20;
-}
-
-#messageBox.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-#messageText {
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.4;
-}
-
-#mazeContainer {
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 95px 15px 170px;
-}
-
-#maze {
-  width: min(94vw, 600px);
-  aspect-ratio: 1 / 1;
-
-  display: grid;
-
-  background: var(--wall);
-
-  border: 2px solid rgba(255,255,255,.25);
-
-  box-shadow: 0 0 60px rgba(255,255,255,.04);
-}
-
-.cell {
-  position: relative;
-  background: var(--wall);
-}
-
-.cell.path {
-  background: var(--path);
-}
-
-.cell.exit {
-  background: var(--accent);
-  animation: exitPulse 1.6s infinite;
-}
-
-@keyframes exitPulse {
-  0%, 100% {
-    opacity: .7;
+  #messageBox{
+    top:58px;
   }
 
-  50% {
-    opacity: 1;
+  .game-hint{
+    display:none;
   }
-}
-
-.player {
-  position: absolute;
-  inset: 20%;
-
-  background: white;
-  border-radius: 50%;
-
-  box-shadow:
-    0 0 10px rgba(255,255,255,.9),
-    0 0 22px rgba(255,255,255,.4);
-}
-
-/* =========================
-   CONTROLES
-========================= */
-
-.controls {
-  position: absolute;
-
-  bottom: max(18px, env(safe-area-inset-bottom));
-  left: 50%;
-
-  transform: translateX(-50%);
-
-  display: grid;
-
-  grid-template-columns: repeat(3, 56px);
-  grid-template-rows: repeat(2, 56px);
-
-  gap: 8px;
-
-  z-index: 30;
-}
-
-.control {
-  border-radius: 16px;
-
-  border: 1px solid rgba(255,255,255,.14);
-
-  background: rgba(255,255,255,.08);
-
-  color: white;
-
-  font-size: 21px;
-
-  cursor: pointer;
-}
-
-.control:active {
-  background: rgba(255,255,255,.25);
-  transform: scale(.93);
-}
-
-.up {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.left {
-  grid-column: 1;
-  grid-row: 2;
-}
-
-.down {
-  grid-column: 2;
-  grid-row: 2;
-}
-
-.right {
-  grid-column: 3;
-  grid-row: 2;
-}
-
-/* =========================
-   FINAL
-========================= */
-
-.final-content {
-  max-width: 620px;
-  animation: fadeIn .8s ease;
-}
-
-.final-small {
-  color: var(--accent);
-  font-size: 11px;
-  letter-spacing: 4px;
-  font-weight: bold;
-  margin-bottom: 25px;
-}
-
-.final-title {
-  font-size: clamp(45px, 12vw, 82px);
-  line-height: .95;
-  letter-spacing: -3px;
-  margin-bottom: 28px;
-}
-
-.final-text {
-  color: var(--muted);
-  font-size: 18px;
-  line-height: 1.6;
-  margin-bottom: 40px;
-}
-
-.reencontro {
-  color: var(--accent);
-  font-size: 12px;
-  font-weight: bold;
-  letter-spacing: 4px;
-  margin-bottom: 25px;
-}
-
-@media (max-height: 700px) {
-
-  #mazeContainer {
-    padding-top: 75px;
-    padding-bottom: 140px;
-  }
-
-  .controls {
-    grid-template-columns: repeat(3, 48px);
-    grid-template-rows: repeat(2, 48px);
-  }
-
-  #messageBox {
-    top: 40px;
-  }
-
 }
 </style>
 </head>
 
 <body>
 
-<!-- TELA INICIAL -->
+<!-- INÍCIO -->
 
 <section id="introScreen" class="screen active">
-
   <div class="content">
 
-    <div class="eyebrow">
-      UMA EXPERIÊNCIA
-    </div>
+    <div class="eyebrow">UMA EXPERIÊNCIA</div>
 
     <h1>
       VOCÊ CONSEGUE<br>
@@ -365,7 +339,6 @@ h1 {
     </button>
 
   </div>
-
 </section>
 
 
@@ -374,9 +347,8 @@ h1 {
 <section id="gameScreen" class="screen">
 
   <div class="game-header">
-    <div class="game-title">
-      ENCONTRE A SAÍDA
-    </div>
+    <div class="game-title">ENCONTRE A SAÍDA</div>
+    <div class="game-hint">DESLIZE O DEDO PARA SE MOVIMENTAR</div>
   </div>
 
   <div id="messageBox">
@@ -387,23 +359,12 @@ h1 {
     <div id="maze"></div>
   </div>
 
-  <div class="controls">
-
-    <button class="control up" data-direction="up">↑</button>
-
-    <button class="control left" data-direction="left">←</button>
-    <button class="control down" data-direction="down">↓</button>
-    <button class="control right" data-direction="right">→</button>
-
-  </div>
-
 </section>
 
 
 <!-- FINAL 1 -->
 
 <section id="finalScreen" class="screen">
-
   <div class="final-content">
 
     <div class="final-small">
@@ -424,14 +385,12 @@ h1 {
     </button>
 
   </div>
-
 </section>
 
 
 <!-- FINAL 2 -->
 
 <section id="messageScreen" class="screen">
-
   <div class="final-content">
 
     <div class="reencontro">
@@ -455,24 +414,19 @@ h1 {
     </button>
 
   </div>
-
 </section>
 
 
 <script>
 
 /*
-  # = PAREDE
-  . = CAMINHO
-  S = INÍCIO
-  E = SAÍDA
-
-  Labirinto maior com bifurcações
-  e diversos becos sem saída.
+# = parede
+. = caminho
+S = início
+E = saída
 */
 
 const mazeMap = [
-
 "#########################",
 "#S....#.......#.........#",
 "#####.#.#####.#.#######.#",
@@ -498,68 +452,53 @@ const mazeMap = [
 "#########.#.###########.#",
 "#.........#.............E",
 "#########################"
-
 ];
 
 const rows = mazeMap.length;
 const cols = mazeMap[0].length;
 
-let player = {
-  row: 1,
-  col: 1
-};
+let player = { row: 1, col: 1 };
 
 let gameStarted = false;
 let gameFinished = false;
+let isMoving = false;
 
-const mazeElement =
-  document.getElementById("maze");
+let touchStartX = 0;
+let touchStartY = 0;
 
-const messageBox =
-  document.getElementById("messageBox");
-
-const messageText =
-  document.getElementById("messageText");
-
-
-/* MENSAGENS */
+const mazeElement = document.getElementById("maze");
+const messageBox = document.getElementById("messageBox");
+const messageText = document.getElementById("messageText");
 
 const checkpoints = [
-
   {
-    row: 3,
-    col: 5,
-    message: "Às vezes, a gente se perde."
+    row:3,
+    col:5,
+    message:"Às vezes, a gente se perde."
   },
-
   {
-    row: 7,
-    col: 9,
-    message: "Tentamos encontrar outros caminhos."
+    row:7,
+    col:9,
+    message:"Tentamos encontrar outros caminhos."
   },
-
   {
-    row: 13,
-    col: 11,
-    message: "Nos afastamos sem perceber."
+    row:13,
+    col:11,
+    message:"Nos afastamos sem perceber."
   },
-
   {
-    row: 21,
-    col: 19,
-    message: "Mas sempre existe um caminho de volta."
+    row:21,
+    col:19,
+    message:"Mas sempre existe um caminho de volta."
   }
-
 ];
 
 const triggeredMessages = new Set();
 
 
-/* CRIAR LABIRINTO */
+function buildMaze(){
 
-function buildMaze() {
-
-  mazeElement.innerHTML = "";
+  mazeElement.innerHTML="";
 
   mazeElement.style.gridTemplateColumns =
     `repeat(${cols}, 1fr)`;
@@ -567,178 +506,167 @@ function buildMaze() {
   mazeElement.style.gridTemplateRows =
     `repeat(${rows}, 1fr)`;
 
-  for (let row = 0; row < rows; row++) {
+  for(let row=0;row<rows;row++){
 
-    for (let col = 0; col < cols; col++) {
+    for(let col=0;col<cols;col++){
 
-      const cell =
-        document.createElement("div");
+      const cell=document.createElement("div");
 
       cell.classList.add("cell");
 
-      const value =
-        mazeMap[row][col];
+      const value=mazeMap[row][col];
 
-      if (
-        value === "." ||
-        value === "S" ||
-        value === "E"
-      ) {
+      if(value==="." || value==="S" || value==="E"){
         cell.classList.add("path");
       }
 
-      if (value === "E") {
+      if(value==="E"){
         cell.classList.add("exit");
       }
 
-      cell.dataset.row = row;
-      cell.dataset.col = col;
+      cell.dataset.row=row;
+      cell.dataset.col=col;
 
       mazeElement.appendChild(cell);
-
     }
-
   }
 
   updatePlayer();
-
 }
 
 
-/* ATUALIZAR JOGADOR */
-
-function updatePlayer() {
+function updatePlayer(){
 
   document
     .querySelectorAll(".player")
-    .forEach(el => el.remove());
+    .forEach(el=>el.remove());
 
-  const cell =
-    document.querySelector(
-      `[data-row="${player.row}"][data-col="${player.col}"]`
-    );
-
-  if (!cell) return;
-
-  const character =
-    document.createElement("div");
-
-  character.classList.add("player");
-
-  cell.appendChild(character);
-
-}
-
-
-/* MOVIMENTAÇÃO */
-
-function movePlayer(direction) {
-
-  if (!gameStarted || gameFinished) return;
-
-  let newRow = player.row;
-  let newCol = player.col;
-
-  if (direction === "up") newRow--;
-
-  if (direction === "down") newRow++;
-
-  if (direction === "left") newCol--;
-
-  if (direction === "right") newCol++;
-
-  if (
-    newRow < 0 ||
-    newRow >= rows ||
-    newCol < 0 ||
-    newCol >= cols
-  ) {
-    return;
-  }
-
-  const destination =
-    mazeMap[newRow][newCol];
-
-  if (destination === "#") {
-    return;
-  }
-
-  player.row = newRow;
-  player.col = newCol;
-
-  updatePlayer();
-
-  checkMessages();
-  checkExit();
-
-}
-
-
-/* MENSAGENS */
-
-function checkMessages() {
-
-  checkpoints.forEach(
-    (checkpoint, index) => {
-
-      if (
-        player.row === checkpoint.row &&
-        player.col === checkpoint.col &&
-        !triggeredMessages.has(index)
-      ) {
-
-        triggeredMessages.add(index);
-
-        showMessage(
-          checkpoint.message
-        );
-
-      }
-
-    }
+  const cell=document.querySelector(
+    `[data-row="${player.row}"][data-col="${player.col}"]`
   );
 
+  if(!cell) return;
+
+  const character=document.createElement("div");
+
+  character.className="player";
+
+  character.innerHTML=`
+    <div class="person">
+      <div class="head"></div>
+      <div class="body"></div>
+      <div class="arm left"></div>
+      <div class="arm right"></div>
+      <div class="leg left"></div>
+      <div class="leg right"></div>
+    </div>
+  `;
+
+  cell.appendChild(character);
 }
 
 
-function showMessage(message) {
+function movePlayer(direction){
 
-  messageText.textContent = message;
+  if(!gameStarted || gameFinished || isMoving) return;
+
+  let newRow=player.row;
+  let newCol=player.col;
+
+  if(direction==="up") newRow--;
+  if(direction==="down") newRow++;
+  if(direction==="left") newCol--;
+  if(direction==="right") newCol++;
+
+  if(
+    newRow<0 ||
+    newRow>=rows ||
+    newCol<0 ||
+    newCol>=cols
+  ){
+    return;
+  }
+
+  const destination=mazeMap[newRow][newCol];
+
+  if(destination==="#"){
+    return;
+  }
+
+  isMoving=true;
+
+  const oldPlayer=document.querySelector(".player");
+
+  if(oldPlayer){
+    oldPlayer.classList.add("walking");
+  }
+
+  player.row=newRow;
+  player.col=newCol;
+
+  setTimeout(()=>{
+
+    updatePlayer();
+
+    isMoving=false;
+
+    checkMessages();
+    checkExit();
+
+  },90);
+}
+
+
+function checkMessages(){
+
+  checkpoints.forEach((checkpoint,index)=>{
+
+    if(
+      player.row===checkpoint.row &&
+      player.col===checkpoint.col &&
+      !triggeredMessages.has(index)
+    ){
+
+      triggeredMessages.add(index);
+
+      showMessage(checkpoint.message);
+    }
+
+  });
+
+}
+
+
+function showMessage(message){
+
+  messageText.textContent=message;
 
   messageBox.classList.add("show");
 
-  setTimeout(() => {
-
+  setTimeout(()=>{
     messageBox.classList.remove("show");
-
-  }, 3200);
+  },3200);
 
 }
 
 
-/* VERIFICAR SAÍDA */
+function checkExit(){
 
-function checkExit() {
+  if(mazeMap[player.row][player.col]==="E"){
 
-  if (
-    mazeMap[player.row][player.col] === "E"
-  ) {
+    gameFinished=true;
 
-    gameFinished = true;
-
-    setTimeout(() => {
+    setTimeout(()=>{
 
       document
         .getElementById("gameScreen")
-        .classList
-        .remove("active");
+        .classList.remove("active");
 
       document
         .getElementById("finalScreen")
-        .classList
-        .add("active");
+        .classList.add("active");
 
-    }, 700);
+    },600);
 
   }
 
@@ -749,97 +677,124 @@ function checkExit() {
 
 document
   .getElementById("startButton")
-  .addEventListener("click", () => {
+  .addEventListener("click",()=>{
 
     document
       .getElementById("introScreen")
-      .classList
-      .remove("active");
+      .classList.remove("active");
 
     document
       .getElementById("gameScreen")
-      .classList
-      .add("active");
+      .classList.add("active");
 
-    gameStarted = true;
-    gameFinished = false;
+    gameStarted=true;
+    gameFinished=false;
 
     buildMaze();
 
   });
 
 
-/* BOTÕES */
+/* CONTROLE POR DESLIZE */
 
-document
-  .querySelectorAll("[data-direction]")
-  .forEach(button => {
+mazeElement.addEventListener(
+  "touchstart",
+  event=>{
 
-    button.addEventListener("click", () => {
+    const touch=event.touches[0];
 
-      movePlayer(
-        button.dataset.direction
-      );
+    touchStartX=touch.clientX;
+    touchStartY=touch.clientY;
 
-    });
+  },
+  {passive:true}
+);
 
-  });
 
+mazeElement.addEventListener(
+  "touchend",
+  event=>{
 
-/* TECLADO */
+    const touch=event.changedTouches[0];
 
-document.addEventListener(
-  "keydown",
-  event => {
+    const deltaX=
+      touch.clientX-touchStartX;
 
-    const key =
-      event.key.toLowerCase();
+    const deltaY=
+      touch.clientY-touchStartY;
 
-    const directions = {
+    const minSwipe=18;
 
-      arrowup: "up",
-      w: "up",
+    if(
+      Math.abs(deltaX)<minSwipe &&
+      Math.abs(deltaY)<minSwipe
+    ){
+      return;
+    }
 
-      arrowdown: "down",
-      s: "down",
+    if(Math.abs(deltaX)>Math.abs(deltaY)){
 
-      arrowleft: "left",
-      a: "left",
+      if(deltaX>0){
+        movePlayer("right");
+      }else{
+        movePlayer("left");
+      }
 
-      arrowright: "right",
-      d: "right"
+    }else{
 
-    };
-
-    if (directions[key]) {
-
-      event.preventDefault();
-
-      movePlayer(
-        directions[key]
-      );
+      if(deltaY>0){
+        movePlayer("down");
+      }else{
+        movePlayer("up");
+      }
 
     }
 
-  }
+  },
+  {passive:true}
 );
+
+
+/* TECLADO PARA TESTE NO COMPUTADOR */
+
+document.addEventListener("keydown",event=>{
+
+  const directions={
+    arrowup:"up",
+    w:"up",
+    arrowdown:"down",
+    s:"down",
+    arrowleft:"left",
+    a:"left",
+    arrowright:"right",
+    d:"right"
+  };
+
+  const key=event.key.toLowerCase();
+
+  if(directions[key]){
+
+    event.preventDefault();
+
+    movePlayer(directions[key]);
+  }
+
+});
 
 
 /* CONTINUAR */
 
 document
   .getElementById("continueButton")
-  .addEventListener("click", () => {
+  .addEventListener("click",()=>{
 
     document
       .getElementById("finalScreen")
-      .classList
-      .remove("active");
+      .classList.remove("active");
 
     document
       .getElementById("messageScreen")
-      .classList
-      .add("active");
+      .classList.add("active");
 
   });
 
@@ -848,27 +803,22 @@ document
 
 document
   .getElementById("restartButton")
-  .addEventListener("click", () => {
+  .addEventListener("click",()=>{
 
-    player = {
-      row: 1,
-      col: 1
-    };
+    player={row:1,col:1};
 
     triggeredMessages.clear();
 
-    gameFinished = false;
-    gameStarted = true;
+    gameFinished=false;
+    gameStarted=true;
 
     document
       .getElementById("messageScreen")
-      .classList
-      .remove("active");
+      .classList.remove("active");
 
     document
       .getElementById("gameScreen")
-      .classList
-      .add("active");
+      .classList.add("active");
 
     buildMaze();
 
