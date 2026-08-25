@@ -7,375 +7,277 @@
 <title>Encontre o Caminho</title>
 
 <style>
-:root {
-  --bg: #080808;
-  --wall: #eeeeee;
-  --path: #151515;
-  --text: #ffffff;
-  --muted: #9d9d9d;
-  --accent: #d6b36a;
+:root{
+  --bg:#080808;
+  --wall:#eeeeee;
+  --path:#151515;
+  --text:#fff;
+  --muted:#9d9d9d;
+  --accent:#d6b36a;
 }
 
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
 }
 
-html,
-body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, Helvetica, sans-serif;
+html,body{
+  width:100%;
+  height:100%;
+  margin:0;
+  overflow:hidden;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
 }
 
-.screen {
-  position: fixed;
-  inset: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 24px;
-  background: var(--bg);
+.screen{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:24px;
+  background:var(--bg);
 }
 
-.screen.active {
-  display: flex;
+.screen.active{
+  display:flex;
 }
 
-.content,
-.final-content {
-  width: 100%;
-  max-width: 620px;
-  animation: fadeIn .7s ease;
+.content,.final-content{
+  width:100%;
+  max-width:620px;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(.97);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.eyebrow,.final-small,.reencontro{
+  color:var(--accent);
+  font-size:11px;
+  font-weight:bold;
+  letter-spacing:4px;
+  margin-bottom:22px;
 }
 
-.eyebrow,
-.final-small,
-.reencontro {
-  color: var(--accent);
-  font-size: 11px;
-  font-weight: bold;
-  letter-spacing: 4px;
-  margin-bottom: 22px;
+h1{
+  margin:0 0 22px;
+  font-size:clamp(42px,11vw,76px);
+  line-height:.96;
+  letter-spacing:-2px;
 }
 
-h1 {
-  margin: 0 0 22px;
-  font-size: clamp(42px, 11vw, 76px);
-  line-height: .96;
-  letter-spacing: -2px;
+.description,.final-text{
+  max-width:440px;
+  margin:0 auto 38px;
+  color:var(--muted);
+  font-size:17px;
+  line-height:1.6;
 }
 
-.description,
-.final-text {
-  max-width: 440px;
-  margin: 0 auto 38px;
-  color: var(--muted);
-  font-size: 17px;
-  line-height: 1.6;
+.main-button{
+  border:none;
+  border-radius:50px;
+  padding:18px 34px;
+  background:white;
+  color:black;
+  font-size:14px;
+  font-weight:bold;
+  letter-spacing:1px;
 }
 
-.main-button {
-  border: none;
-  border-radius: 50px;
-  padding: 18px 34px;
-  background: white;
-  color: black;
-  font-size: 14px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  cursor: pointer;
+/* ================= JOGO ================= */
+
+#gameScreen{
+  padding:0;
 }
 
-.main-button:active {
-  transform: scale(.96);
+.game-header{
+  position:absolute;
+  top:20px;
+  left:0;
+  width:100%;
+  z-index:20;
+  pointer-events:none;
 }
 
-/* =========================
-   JOGO
-========================= */
-
-#gameScreen {
-  padding: 0;
+.game-title{
+  font-size:10px;
+  letter-spacing:3px;
+  color:rgba(255,255,255,.55);
 }
 
-.game-header {
-  position: absolute;
-  top: max(18px, env(safe-area-inset-top));
-  left: 0;
-  width: 100%;
-  z-index: 20;
-  pointer-events: none;
+.game-hint{
+  margin-top:10px;
+  font-size:11px;
+  color:rgba(255,255,255,.35);
 }
 
-.game-title {
-  font-size: 10px;
-  color: rgba(255,255,255,.55);
-  letter-spacing: 3px;
-}
-
-.game-hint {
-  margin-top: 10px;
-  font-size: 11px;
-  color: rgba(255,255,255,.35);
-}
-
-#messageBox {
-  position: absolute;
-  top: 76px;
-  left: 50%;
-  transform: translateX(-50%) translateY(-10px);
-  width: min(88vw, 430px);
-  padding: 14px 20px;
-  border-radius: 18px;
-  background: rgba(0,0,0,.78);
-  border: 1px solid rgba(255,255,255,.12);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 30;
-  transition: opacity .45s ease, transform .45s ease;
-}
-
-#messageBox.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-#messageText {
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.4;
-}
-
-/* ÁREA DO JOGO */
-
-#gameArea {
-  position: relative;
-  width: min(94vw, 650px);
-  height: min(78vh, 650px);
-  margin-top: 55px;
-  overflow: hidden;
-  background: var(--wall);
-  border: 2px solid rgba(255,255,255,.22);
-  box-shadow: 0 0 60px rgba(255,255,255,.04);
-  touch-action: none;
+#gameArea{
+  position:relative;
+  width:min(92vw,520px);
+  height:min(70vh,520px);
+  overflow:hidden;
+  background:var(--wall);
+  border-radius:8px;
+  touch-action:none;
 }
 
 /* CAMINHOS */
 
-.path {
-  position: absolute;
-  background: var(--path);
+.path,.start{
+  position:absolute;
+  background:var(--path);
 }
 
-/* ENTRADA */
-
-.start {
-  position: absolute;
-  background: var(--path);
-}
-
-/* SAÍDA */
-
-.exit {
-  position: absolute;
-  background: var(--accent);
-  box-shadow: 0 0 25px rgba(214,179,106,.45);
-  animation: exitPulse 1.8s infinite;
-}
-
-@keyframes exitPulse {
-  0%, 100% {
-    opacity: .75;
-  }
-  50% {
-    opacity: 1;
-  }
+.exit{
+  position:absolute;
+  background:var(--accent);
+  box-shadow:0 0 25px rgba(214,179,106,.55);
 }
 
 /* PERSONAGEM */
 
-#player {
-  position: absolute;
-  width: 28px;
-  height: 42px;
-  z-index: 10;
-  pointer-events: none;
-  filter: drop-shadow(0 0 7px rgba(255,255,255,.8));
-  transition: none;
+#player{
+  position:absolute;
+  width:26px;
+  height:40px;
+  z-index:10;
+  pointer-events:none;
+  filter:drop-shadow(0 0 7px rgba(255,255,255,.8));
 }
 
-.person {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  animation: idle 1.5s ease-in-out infinite;
+.person{
+  position:relative;
+  width:100%;
+  height:100%;
+  animation:idle 1.5s ease-in-out infinite;
 }
 
-#player.moving .person {
-  animation: walking .22s ease-in-out infinite alternate;
+#player.moving .person{
+  animation:walking .2s ease-in-out infinite alternate;
 }
 
-.head {
-  position: absolute;
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: white;
-  left: 7px;
-  top: 0;
+.head{
+  position:absolute;
+  width:13px;
+  height:13px;
+  border-radius:50%;
+  background:white;
+  left:6px;
 }
 
-.body {
-  position: absolute;
-  width: 20px;
-  height: 21px;
-  background: white;
-  border-radius: 50% 50% 25% 25%;
-  left: 4px;
-  top: 11px;
+.body{
+  position:absolute;
+  width:19px;
+  height:20px;
+  background:white;
+  border-radius:50% 50% 25% 25%;
+  left:3px;
+  top:11px;
 }
 
-.arm {
-  position: absolute;
-  width: 6px;
-  height: 19px;
-  background: white;
-  border-radius: 20px;
-  top: 15px;
+.arm{
+  position:absolute;
+  width:5px;
+  height:18px;
+  background:white;
+  border-radius:20px;
+  top:15px;
 }
 
-.arm.left {
-  left: 1px;
-  transform: rotate(10deg);
+.arm.left{
+  left:1px;
+  transform:rotate(12deg);
 }
 
-.arm.right {
-  right: 1px;
-  transform: rotate(-10deg);
+.arm.right{
+  right:1px;
+  transform:rotate(-12deg);
 }
 
-.leg {
-  position: absolute;
-  width: 7px;
-  height: 14px;
-  background: white;
-  border-radius: 20px;
-  top: 29px;
+.leg{
+  position:absolute;
+  width:7px;
+  height:13px;
+  background:white;
+  border-radius:20px;
+  top:28px;
 }
 
-.leg.left {
-  left: 7px;
+.leg.left{
+  left:6px;
 }
 
-.leg.right {
-  right: 7px;
+.leg.right{
+  right:6px;
 }
 
-@keyframes idle {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-2px);
-  }
+@keyframes idle{
+  50%{transform:translateY(-2px)}
 }
 
-@keyframes walking {
-  from {
-    transform: translateY(0) rotate(-1deg);
-  }
-  to {
-    transform: translateY(-3px) rotate(1deg);
-  }
+@keyframes walking{
+  from{transform:translateY(0)}
+  to{transform:translateY(-3px)}
 }
 
-/* JOYSTICK VISUAL */
+/* JOYSTICK */
 
-#joystick {
-  position: absolute;
-  width: 68px;
-  height: 68px;
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.05);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  opacity: 0;
-  z-index: 15;
-  transition: opacity .2s ease;
+#joystick{
+  position:absolute;
+  width:65px;
+  height:65px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.05);
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  opacity:0;
+  z-index:30;
 }
 
-#joystick.show {
-  opacity: 1;
+#joystick.show{
+  opacity:1;
 }
 
-#joystickKnob {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.75);
-  left: 19px;
-  top: 19px;
+#joystickKnob{
+  position:absolute;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:white;
+  left:18px;
+  top:18px;
+  opacity:.75;
 }
 
 /* FINAL */
 
-.final-title {
-  font-size: clamp(44px, 12vw, 82px);
-  line-height: .95;
-  letter-spacing: -3px;
-  margin-bottom: 28px;
+.final-title{
+  font-size:clamp(45px,12vw,82px);
+  line-height:.95;
+  letter-spacing:-3px;
 }
 
-@media (max-height: 700px) {
-
-  #gameArea {
-    height: min(74vh, 540px);
-    margin-top: 45px;
+@media(max-height:700px){
+  #gameArea{
+    height:68vh;
   }
 
-  #messageBox {
-    top: 60px;
-  }
-
-  .game-hint {
-    display: none;
+  .game-hint{
+    display:none;
   }
 }
-
 </style>
 </head>
 
 <body>
 
-<!-- TELA INICIAL -->
-
 <section id="introScreen" class="screen active">
-
   <div class="content">
 
-    <div class="eyebrow">
-      UMA EXPERIÊNCIA
-    </div>
+    <div class="eyebrow">UMA EXPERIÊNCIA</div>
 
     <h1>
       VOCÊ CONSEGUE<br>
@@ -384,8 +286,7 @@ h1 {
     </h1>
 
     <p class="description">
-      Às vezes, para encontrar algo,
-      precisamos descobrir para onde ir.
+      Nem sempre o caminho parece tão claro.
     </p>
 
     <button class="main-button" id="startButton">
@@ -393,83 +294,102 @@ h1 {
     </button>
 
   </div>
-
 </section>
 
-
-<!-- JOGO -->
 
 <section id="gameScreen" class="screen">
 
   <div class="game-header">
-    <div class="game-title">
-      ENCONTRE O CAMINHO
-    </div>
-
-    <div class="game-hint">
-      TOQUE E ARRASTE PARA CAMINHAR
-    </div>
-  </div>
-
-  <div id="messageBox">
-    <p id="messageText"></p>
+    <div class="game-title">ENCONTRE O CAMINHO</div>
+    <div class="game-hint">TOQUE E ARRASTE PARA CAMINHAR</div>
   </div>
 
   <div id="gameArea">
 
-    <!-- Caminho principal -->
-    <div class="path" style="left:5%; top:8%; width:48%; height:12%;"></div>
-    <div class="path" style="left:41%; top:8%; width:12%; height:38%;"></div>
-    <div class="path" style="left:41%; top:34%; width:42%; height:12%;"></div>
-    <div class="path" style="left:71%; top:34%; width:12%; height:42%;"></div>
-    <div class="path" style="left:45%; top:64%; width:38%; height:12%;"></div>
-    <div class="path" style="left:45%; top:64%; width:12%; height:25%;"></div>
-    <div class="path" style="left:45%; top:77%; width:42%; height:12%;"></div>
-
-    <!-- Beco sem saída 1 -->
-    <div class="path" style="left:18%; top:8%; width:12%; height:25%;"></div>
-    <div class="path" style="left:18%; top:21%; width:22%; height:12%;"></div>
-
-    <!-- Beco sem saída 2 -->
-    <div class="path" style="left:41%; top:21%; width:27%; height:12%;"></div>
-    <div class="path" style="left:56%; top:12%; width:12%; height:21%;"></div>
-
-    <!-- Beco sem saída 3 -->
-    <div class="path" style="left:58%; top:34%; width:12%; height:18%;"></div>
-    <div class="path" style="left:58%; top:40%; width:22%; height:12%;"></div>
-
-    <!-- Beco sem saída 4 -->
-    <div class="path" style="left:71%; top:52%; width:20%; height:12%;"></div>
-
-    <!-- Beco sem saída 5 -->
-    <div class="path" style="left:26%; top:64%; width:31%; height:12%;"></div>
-    <div class="path" style="left:26%; top:52%; width:12%; height:24%;"></div>
+    <!-- CAMINHO PRINCIPAL - MENOR -->
 
     <!-- Entrada -->
-    <div class="start" id="startArea"
-      style="left:5%; top:8%; width:12%; height:12%;">
+    <div class="start"
+      style="left:8%;top:10%;width:15%;height:15%;">
     </div>
 
-    <!-- Saída -->
+    <!-- Vai para direita -->
+    <div class="path"
+      style="left:8%;top:10%;width:52%;height:15%;">
+    </div>
+
+    <!-- Desce -->
+    <div class="path"
+      style="left:45%;top:10%;width:15%;height:42%;">
+    </div>
+
+    <!-- Vai para esquerda -->
+    <div class="path"
+      style="left:22%;top:38%;width:38%;height:15%;">
+    </div>
+
+    <!-- Desce -->
+    <div class="path"
+      style="left:22%;top:38%;width:15%;height:38%;">
+    </div>
+
+    <!-- Vai para direita -->
+    <div class="path"
+      style="left:22%;top:62%;width:55%;height:15%;">
+    </div>
+
+    <!-- Desce até saída -->
+    <div class="path"
+      style="left:62%;top:62%;width:15%;height:25%;">
+    </div>
+
+    <!-- SAÍDA -->
     <div class="exit" id="exitArea"
-      style="left:75%; top:77%; width:12%; height:12%;">
+      style="left:62%;top:74%;width:15%;height:15%;">
     </div>
 
-    <!-- Personagem -->
+
+    <!-- CAMINHO FALSO 1 -->
+
+    <div class="path"
+      style="left:58%;top:10%;width:25%;height:15%;">
+    </div>
+
+
+    <!-- CAMINHO FALSO 2 -->
+
+    <div class="path"
+      style="left:22%;top:25%;width:15%;height:25%;">
+    </div>
+
+
+    <!-- CAMINHO FALSO 3 -->
+
+    <div class="path"
+      style="left:37%;top:62%;width:15%;height:25%;">
+    </div>
+
+
+    <!-- PERSONAGEM -->
+
     <div id="player">
 
       <div class="person">
         <div class="head"></div>
         <div class="body"></div>
+
         <div class="arm left"></div>
         <div class="arm right"></div>
+
         <div class="leg left"></div>
         <div class="leg right"></div>
       </div>
 
     </div>
 
-    <!-- Joystick -->
+
+    <!-- JOYSTICK -->
+
     <div id="joystick">
       <div id="joystickKnob"></div>
     </div>
@@ -478,8 +398,6 @@ h1 {
 
 </section>
 
-
-<!-- FINAL 1 -->
 
 <section id="finalScreen" class="screen">
 
@@ -506,8 +424,6 @@ h1 {
 
 </section>
 
-
-<!-- FINAL 2 -->
 
 <section id="messageScreen" class="screen">
 
@@ -540,257 +456,213 @@ h1 {
 
 <script>
 
-/* ==============================
-   ELEMENTOS
-============================== */
-
 const gameArea = document.getElementById("gameArea");
 const playerEl = document.getElementById("player");
 const joystick = document.getElementById("joystick");
 const joystickKnob = document.getElementById("joystickKnob");
 const exitArea = document.getElementById("exitArea");
 
-const messageBox = document.getElementById("messageBox");
-const messageText = document.getElementById("messageText");
-
-
-/* ==============================
-   POSIÇÃO DO JOGADOR
-============================== */
-
 let player = {
-  x: 0,
-  y: 0,
-  width: 28,
-  height: 42
+  x:0,
+  y:0,
+  width:26,
+  height:40
 };
 
-let gameStarted = false;
-let gameFinished = false;
+let gameStarted=false;
+let gameFinished=false;
+let controlling=false;
 
-let controlling = false;
+let startX=0;
+let startY=0;
 
-let controlStartX = 0;
-let controlStartY = 0;
+let directionX=0;
+let directionY=0;
 
-let directionX = 0;
-let directionY = 0;
-
-let lastTime = 0;
+let lastTime=0;
 
 
-/* ==============================
-   INICIAR JOGO
-============================== */
+/* POSIÇÃO INICIAL */
 
-function resetPlayer() {
+function resetPlayer(){
 
-  const area = gameArea.getBoundingClientRect();
+  const area=gameArea.getBoundingClientRect();
 
-  player.x = area.width * 0.075;
-  player.y = area.height * 0.10;
+  player.x=area.width*.10;
+  player.y=area.height*.11;
 
   updatePlayer();
+}
 
+function updatePlayer(){
+
+  playerEl.style.left=player.x+"px";
+  playerEl.style.top=player.y+"px";
 }
 
 
-function updatePlayer() {
+/* VERIFICAR CAMINHO */
 
-  playerEl.style.left = player.x + "px";
-  playerEl.style.top = player.y + "px";
+function canMoveTo(newX,newY){
 
-}
-
-
-/* ==============================
-   COLISÃO COM CAMINHOS
-============================== */
-
-function canMoveTo(newX, newY) {
-
-  const playerRect = {
-    left: newX + 7,
-    top: newY + 5,
-    right: newX + player.width - 7,
-    bottom: newY + player.height - 4
+  const playerRect={
+    left:newX+5,
+    top:newY+4,
+    right:newX+player.width-5,
+    bottom:newY+player.height-3
   };
 
-  const paths = document.querySelectorAll(".path, .start, .exit");
+  const paths=document.querySelectorAll(
+    ".path,.start,.exit"
+  );
 
-  for (const path of paths) {
+  for(const path of paths){
 
-    const areaRect = gameArea.getBoundingClientRect();
-    const rect = path.getBoundingClientRect();
+    const areaRect=
+      gameArea.getBoundingClientRect();
 
-    const relative = {
-      left: rect.left - areaRect.left,
-      top: rect.top - areaRect.top,
-      right: rect.right - areaRect.left,
-      bottom: rect.bottom - areaRect.top
-    };
+    const rect=
+      path.getBoundingClientRect();
 
-    const inside =
-      playerRect.left >= relative.left &&
-      playerRect.right <= relative.right &&
-      playerRect.top >= relative.top &&
-      playerRect.bottom <= relative.bottom;
+    const left=rect.left-areaRect.left;
+    const top=rect.top-areaRect.top;
+    const right=rect.right-areaRect.left;
+    const bottom=rect.bottom-areaRect.top;
 
-    if (inside) {
+    if(
+      playerRect.left>=left &&
+      playerRect.right<=right &&
+      playerRect.top>=top &&
+      playerRect.bottom<=bottom
+    ){
       return true;
     }
-
   }
 
   return false;
-
 }
 
 
-/* ==============================
-   MOVIMENTO CONTÍNUO
-============================== */
+/* MOVIMENTO */
 
-function gameLoop(time) {
+function gameLoop(time){
 
-  if (!lastTime) lastTime = time;
+  if(!lastTime) lastTime=time;
 
-  const delta = (time - lastTime) / 1000;
+  const delta=(time-lastTime)/1000;
 
-  lastTime = time;
+  lastTime=time;
 
-  if (
+  if(
     gameStarted &&
     !gameFinished &&
     controlling
-  ) {
+  ){
 
-    const speed = 140;
+    const speed=130;
 
-    let newX =
-      player.x +
-      directionX * speed * delta;
+    const newX=
+      player.x+
+      directionX*speed*delta;
 
-    let newY =
-      player.y +
-      directionY * speed * delta;
+    const newY=
+      player.y+
+      directionY*speed*delta;
 
 
-    /* Movimento separado nos eixos
-       para deslizar naturalmente
-       pelas paredes */
-
-    if (canMoveTo(newX, player.y)) {
-      player.x = newX;
+    if(canMoveTo(newX,player.y)){
+      player.x=newX;
     }
 
-    if (canMoveTo(player.x, newY)) {
-      player.y = newY;
+    if(canMoveTo(player.x,newY)){
+      player.y=newY;
     }
 
     updatePlayer();
 
     checkExit();
-
   }
 
   requestAnimationFrame(gameLoop);
-
 }
 
 requestAnimationFrame(gameLoop);
 
 
-/* ==============================
-   TOQUE
-============================== */
+/* CONTROLE */
 
-function startControl(clientX, clientY) {
+function startControl(x,y){
 
-  if (!gameStarted || gameFinished) return;
+  if(!gameStarted || gameFinished) return;
 
-  controlling = true;
+  controlling=true;
 
-  controlStartX = clientX;
-  controlStartY = clientY;
+  startX=x;
+  startY=y;
 
-  const rect = gameArea.getBoundingClientRect();
+  const rect=
+    gameArea.getBoundingClientRect();
 
-  joystick.style.left =
-    (clientX - rect.left) + "px";
+  joystick.style.left=
+    (x-rect.left)+"px";
 
-  joystick.style.top =
-    (clientY - rect.top) + "px";
+  joystick.style.top=
+    (y-rect.top)+"px";
 
   joystick.classList.add("show");
 
   playerEl.classList.add("moving");
-
 }
 
 
-function moveControl(clientX, clientY) {
+function moveControl(x,y){
 
-  if (!controlling) return;
+  if(!controlling) return;
 
-  let dx = clientX - controlStartX;
-  let dy = clientY - controlStartY;
+  let dx=x-startX;
+  let dy=y-startY;
 
-  const distance =
-    Math.sqrt(dx * dx + dy * dy);
+  const distance=
+    Math.sqrt(dx*dx+dy*dy);
 
-  const maxDistance = 34;
+  if(distance<5){
 
-  if (distance > maxDistance) {
+    directionX=0;
+    directionY=0;
 
-    dx = dx / distance * maxDistance;
-    dy = dy / distance * maxDistance;
-
+    return;
   }
 
-  joystickKnob.style.transform =
-    `translate(${dx}px, ${dy}px)`;
+  directionX=dx/distance;
+  directionY=dy/distance;
 
 
-  const strength =
-    Math.min(distance / 70, 1);
+  const limit=25;
 
-  if (distance > 5) {
+  if(distance>limit){
 
-    directionX =
-      (clientX - controlStartX) /
-      distance *
-      strength;
-
-    directionY =
-      (clientY - controlStartY) /
-      distance *
-      strength;
-
-  } else {
-
-    directionX = 0;
-    directionY = 0;
-
+    dx=(dx/distance)*limit;
+    dy=(dy/distance)*limit;
   }
 
+  joystickKnob.style.transform=
+    `translate(${dx}px,${dy}px)`;
 }
 
 
-function stopControl() {
+function stopControl(){
 
-  controlling = false;
+  controlling=false;
 
-  directionX = 0;
-  directionY = 0;
+  directionX=0;
+  directionY=0;
 
   joystick.classList.remove("show");
 
-  joystickKnob.style.transform =
+  joystickKnob.style.transform=
     "translate(0,0)";
 
   playerEl.classList.remove("moving");
-
 }
 
 
@@ -798,78 +670,45 @@ function stopControl() {
 
 gameArea.addEventListener(
   "touchstart",
-  event => {
-
-    const touch = event.touches[0];
-
-    startControl(
-      touch.clientX,
-      touch.clientY
-    );
-
+  e=>{
+    const t=e.touches[0];
+    startControl(t.clientX,t.clientY);
   },
-  { passive: true }
+  {passive:true}
 );
-
 
 gameArea.addEventListener(
   "touchmove",
-  event => {
-
-    const touch = event.touches[0];
-
-    moveControl(
-      touch.clientX,
-      touch.clientY
-    );
-
+  e=>{
+    const t=e.touches[0];
+    moveControl(t.clientX,t.clientY);
   },
-  { passive: true }
+  {passive:true}
 );
-
 
 gameArea.addEventListener(
   "touchend",
   stopControl
 );
 
-gameArea.addEventListener(
-  "touchcancel",
-  stopControl
-);
 
-
-/* MOUSE PARA TESTE */
+/* MOUSE */
 
 gameArea.addEventListener(
   "mousedown",
-  event => {
-
-    startControl(
-      event.clientX,
-      event.clientY
-    );
-
+  e=>{
+    startControl(e.clientX,e.clientY);
   }
 );
-
 
 window.addEventListener(
   "mousemove",
-  event => {
-
-    if (controlling) {
-
-      moveControl(
-        event.clientX,
-        event.clientY
-      );
-
+  e=>{
+    if(controlling){
+      moveControl(e.clientX,e.clientY);
     }
-
   }
 );
-
 
 window.addEventListener(
   "mouseup",
@@ -877,61 +716,55 @@ window.addEventListener(
 );
 
 
-/* ==============================
-   VERIFICAR SAÍDA
-============================== */
+/* SAÍDA */
 
-function checkExit() {
+function checkExit(){
 
-  const areaRect =
+  const areaRect=
     gameArea.getBoundingClientRect();
 
-  const exitRect =
+  const exitRect=
     exitArea.getBoundingClientRect();
 
-  const exitLeft =
-    exitRect.left - areaRect.left;
+  const left=
+    exitRect.left-areaRect.left;
 
-  const exitTop =
-    exitRect.top - areaRect.top;
+  const top=
+    exitRect.top-areaRect.top;
 
-  const exitRight =
-    exitRect.right - areaRect.left;
+  const right=
+    exitRect.right-areaRect.left;
 
-  const exitBottom =
-    exitRect.bottom - areaRect.top;
+  const bottom=
+    exitRect.bottom-areaRect.top;
+
+  const centerX=
+    player.x+player.width/2;
+
+  const centerY=
+    player.y+player.height/2;
 
 
-  const centerX =
-    player.x + player.width / 2;
-
-  const centerY =
-    player.y + player.height / 2;
-
-
-  if (
-    centerX > exitLeft &&
-    centerX < exitRight &&
-    centerY > exitTop &&
-    centerY < exitBottom
-  ) {
-
+  if(
+    centerX>left &&
+    centerX<right &&
+    centerY>top &&
+    centerY<bottom
+  ){
     finishGame();
-
   }
-
 }
 
 
-function finishGame() {
+function finishGame(){
 
-  if (gameFinished) return;
+  if(gameFinished) return;
 
-  gameFinished = true;
+  gameFinished=true;
 
   stopControl();
 
-  setTimeout(() => {
+  setTimeout(()=>{
 
     document
       .getElementById("gameScreen")
@@ -941,18 +774,15 @@ function finishGame() {
       .getElementById("finalScreen")
       .classList.add("active");
 
-  }, 500);
-
+  },500);
 }
 
 
-/* ==============================
-   INICIAR
-============================== */
+/* COMEÇAR */
 
 document
   .getElementById("startButton")
-  .addEventListener("click", () => {
+  .addEventListener("click",()=>{
 
     document
       .getElementById("introScreen")
@@ -962,21 +792,18 @@ document
       .getElementById("gameScreen")
       .classList.add("active");
 
-    gameStarted = true;
-    gameFinished = false;
+    gameStarted=true;
+    gameFinished=false;
 
-    setTimeout(resetPlayer, 100);
-
+    setTimeout(resetPlayer,100);
   });
 
 
-/* ==============================
-   CONTINUAR
-============================== */
+/* CONTINUAR */
 
 document
   .getElementById("continueButton")
-  .addEventListener("click", () => {
+  .addEventListener("click",()=>{
 
     document
       .getElementById("finalScreen")
@@ -989,13 +816,11 @@ document
   });
 
 
-/* ==============================
-   REINICIAR
-============================== */
+/* REINICIAR */
 
 document
   .getElementById("restartButton")
-  .addEventListener("click", () => {
+  .addEventListener("click",()=>{
 
     document
       .getElementById("messageScreen")
@@ -1005,28 +830,11 @@ document
       .getElementById("gameScreen")
       .classList.add("active");
 
-    gameStarted = true;
-    gameFinished = false;
+    gameStarted=true;
+    gameFinished=false;
 
-    setTimeout(resetPlayer, 100);
-
+    setTimeout(resetPlayer,100);
   });
-
-
-/* ==============================
-   REDIMENSIONAMENTO
-============================== */
-
-window.addEventListener(
-  "resize",
-  () => {
-
-    if (gameStarted && !gameFinished) {
-      resetPlayer();
-    }
-
-  }
-);
 
 </script>
 
