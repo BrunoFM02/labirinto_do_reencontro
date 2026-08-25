@@ -2,109 +2,102 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>Encontre o Caminho</title>
 
 <style>
-:root{
-  --bg:#080808;
-  --wall:#eeeeee;
-  --path:#151515;
-  --text:#ffffff;
-  --muted:#9d9d9d;
-  --accent:#d6b36a;
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-  user-select:none;
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #080808;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #ffffff;
 }
 
-html,body{
-  width:100%;
-  height:100%;
-  margin:0;
-  overflow:hidden;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
+.screen {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 25px;
+  background: #080808;
 }
 
-.screen{
-  position:fixed;
-  inset:0;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:24px;
-  background:var(--bg);
-}
-
-.screen.active{
-  display:flex;
+.screen.active {
+  display: flex;
 }
 
 .content,
-.final-content{
-  width:100%;
-  max-width:620px;
-  animation:fadeIn .6s ease;
+.final-content {
+  max-width: 600px;
+  animation: aparecer .5s ease;
 }
 
-@keyframes fadeIn{
-  from{
-    opacity:0;
-    transform:scale(.96);
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
   }
-  to{
-    opacity:1;
-    transform:scale(1);
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
 .eyebrow,
-.final-small,
-.reencontro{
-  color:var(--accent);
-  font-size:11px;
-  font-weight:bold;
-  letter-spacing:4px;
-  margin-bottom:22px;
+.final-small {
+  color: #d6b36a;
+  font-size: 11px;
+  letter-spacing: 4px;
+  font-weight: bold;
+  margin-bottom: 25px;
 }
 
-h1{
-  margin:0 0 22px;
-  font-size:clamp(42px,11vw,76px);
-  line-height:.96;
-  letter-spacing:-2px;
+h1 {
+  margin: 0;
+  font-size: clamp(42px, 10vw, 75px);
+  line-height: .95;
+  letter-spacing: -2px;
 }
 
 .description,
-.final-text{
-  max-width:440px;
-  margin:0 auto 38px;
-  color:var(--muted);
-  font-size:17px;
-  line-height:1.6;
+.final-text {
+  color: #a0a0a0;
+  margin: 30px auto;
+  font-size: 17px;
+  line-height: 1.6;
 }
 
-.main-button{
-  border:none;
-  border-radius:50px;
-  padding:18px 34px;
-  background:#fff;
-  color:#000;
-  font-size:14px;
-  font-weight:bold;
-  letter-spacing:1px;
-  cursor:pointer;
+.button {
+  border: none;
+  background: #ffffff;
+  color: #000000;
+  padding: 18px 35px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
 }
 
-.main-button:active{
-  transform:scale(.96);
+.button:active {
+  transform: scale(.96);
 }
 
 
@@ -112,72 +105,62 @@ h1{
    JOGO
 ========================= */
 
-#gameScreen{
-  padding:0;
+#gameScreen {
+  padding: 0;
 }
 
-.game-header{
-  position:absolute;
-  top:max(18px,env(safe-area-inset-top));
-  left:0;
-  width:100%;
-  z-index:10;
-  pointer-events:none;
+.game-header {
+  position: fixed;
+  top: 22px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 20;
+  pointer-events: none;
 }
 
-.game-title{
-  font-size:10px;
-  color:rgba(255,255,255,.6);
-  letter-spacing:3px;
+.game-title {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #c0c0c0;
 }
 
-.game-hint{
-  margin-top:10px;
-  color:rgba(255,255,255,.35);
-  font-size:11px;
-  letter-spacing:1px;
+.game-hint {
+  margin-top: 10px;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #777777;
 }
 
-#mazeContainer{
-  width:100%;
-  height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:80px 14px 25px;
+#mazeContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 15px 20px;
 }
 
-#maze{
-  width:min(94vw,560px);
-  aspect-ratio:1/1;
-  display:grid;
-  background:var(--wall);
-  border:2px solid rgba(255,255,255,.2);
-  touch-action:none;
-  box-shadow:0 0 50px rgba(255,255,255,.04);
+#maze {
+  width: min(92vw, 560px);
+  aspect-ratio: 1 / 1;
+  display: grid;
+  background: #ffffff;
+  border: 2px solid #444444;
+  touch-action: none;
 }
 
-.cell{
-  position:relative;
-  background:var(--wall);
+.cell {
+  position: relative;
+  background: #ffffff;
 }
 
-.cell.path{
-  background:var(--path);
+.cell.path {
+  background: #161616;
 }
 
-.cell.exit{
-  background:var(--accent);
-  animation:exitPulse 1.5s infinite;
-}
-
-@keyframes exitPulse{
-  0%,100%{
-    opacity:.75;
-  }
-  50%{
-    opacity:1;
-  }
+.cell.exit {
+  background: #d6b36a;
 }
 
 
@@ -185,90 +168,76 @@ h1{
    PERSONAGEM
 ========================= */
 
-.player{
-  position:absolute;
-  inset:8%;
-  z-index:5;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  pointer-events:none;
+.player {
+  position: absolute;
+  inset: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  pointer-events: none;
 }
 
-.person{
-  position:relative;
-  width:72%;
-  height:88%;
-  filter:drop-shadow(0 0 4px rgba(255,255,255,.9));
+.person {
+  position: relative;
+  width: 75%;
+  height: 88%;
 }
 
-.head{
-  position:absolute;
-  width:30%;
-  aspect-ratio:1;
-  border-radius:50%;
-  background:#fff;
-  left:35%;
-  top:0;
+.head {
+  position: absolute;
+  width: 30%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ffffff;
+  left: 35%;
+  top: 0;
 }
 
-.body{
-  position:absolute;
-  width:48%;
-  height:52%;
-  background:#fff;
-  border-radius:50% 50% 25% 25%;
-  left:26%;
-  top:25%;
+.body {
+  position: absolute;
+  width: 46%;
+  height: 48%;
+  background: #ffffff;
+  border-radius: 45% 45% 25% 25%;
+  left: 27%;
+  top: 25%;
 }
 
-.arm{
-  position:absolute;
-  width:15%;
-  height:40%;
-  background:#fff;
-  border-radius:20px;
-  top:31%;
+.arm {
+  position: absolute;
+  width: 13%;
+  height: 38%;
+  background: #ffffff;
+  border-radius: 20px;
+  top: 31%;
 }
 
-.arm.left{
-  left:13%;
-  transform:rotate(12deg);
+.arm.left {
+  left: 14%;
+  transform: rotate(15deg);
 }
 
-.arm.right{
-  right:13%;
-  transform:rotate(-12deg);
+.arm.right {
+  right: 14%;
+  transform: rotate(-15deg);
 }
 
-.leg{
-  position:absolute;
-  width:16%;
-  height:28%;
-  background:#fff;
-  border-radius:20px;
-  top:70%;
+.leg {
+  position: absolute;
+  width: 15%;
+  height: 28%;
+  background: #ffffff;
+  border-radius: 20px;
+  top: 69%;
 }
 
-.leg.left{
-  left:31%;
+.leg.left {
+  left: 32%;
 }
 
-.leg.right{
-  right:31%;
-}
-
-.player.walking .person{
-  animation:walk .18s ease-in-out infinite alternate;
-}
-
-@keyframes walk{
-  from{
-    transform:translateY(0);
-  }
-  to{
-    transform:translateY(-8%);
-  }
+.leg.right {
+  right: 32%;
 }
 
 
@@ -276,32 +245,15 @@ h1{
    FINAL
 ========================= */
 
-.final-title{
-  font-size:clamp(45px,12vw,82px);
-  line-height:.95;
-  letter-spacing:-3px;
-  margin-bottom:28px;
+.final-title {
+  margin-bottom: 25px;
 }
-
-@media(max-height:700px){
-
-  #mazeContainer{
-    padding-top:65px;
-  }
-
-  .game-hint{
-    display:none;
-  }
-}
-
 </style>
 </head>
 
 <body>
 
-
 <!-- TELA INICIAL -->
-
 <section id="introScreen" class="screen active">
 
   <div class="content">
@@ -320,7 +272,7 @@ h1{
       Nem sempre sabemos qual caminho seguir.
     </p>
 
-    <button class="main-button" id="startButton">
+    <button class="button" onclick="startGame()">
       COMEÇAR
     </button>
 
@@ -330,7 +282,6 @@ h1{
 
 
 <!-- JOGO -->
-
 <section id="gameScreen" class="screen">
 
   <div class="game-header">
@@ -340,7 +291,7 @@ h1{
     </div>
 
     <div class="game-hint">
-      DESLIZE PARA ESCOLHER UMA DIREÇÃO
+      DESLIZE O DEDO PARA SEGUIR
     </div>
 
   </div>
@@ -352,8 +303,7 @@ h1{
 </section>
 
 
-<!-- FINAL 1 -->
-
+<!-- FINAL -->
 <section id="finalScreen" class="screen">
 
   <div class="final-content">
@@ -363,48 +313,20 @@ h1{
     </div>
 
     <h1 class="final-title">
-      VOCÊ<br>
-      CONSEGUIU.
-    </h1>
-
-    <p class="final-text">
-      Mas existe um caminho ainda mais importante.
-    </p>
-
-    <button class="main-button" id="continueButton">
-      CONTINUAR
-    </button>
-
-  </div>
-
-</section>
-
-
-<!-- FINAL 2 -->
-
-<section id="messageScreen" class="screen">
-
-  <div class="final-content">
-
-    <div class="reencontro">
-      DOMINGO DO REENCONTRO
-    </div>
-
-    <h1 class="final-title">
       O CAMINHO<br>
       DE VOLTA<br>
-      PARA DEUS.
+      ESTÁ ABERTO.
     </h1>
 
     <p class="final-text">
-      Não importa quanto tempo passou.
+      Às vezes nos perdemos.
       <br><br>
-      Não importa o caminho que você escolheu.
+      Às vezes escolhemos caminhos que nos afastam.
       <br><br>
-      O caminho de volta ainda está aberto.
+      Mas para Deus, sempre existe um caminho de volta.
     </p>
 
-    <button class="main-button" id="restartButton">
+    <button class="button" onclick="restartGame()">
       JOGAR NOVAMENTE
     </button>
 
@@ -415,125 +337,98 @@ h1{
 
 <script>
 
-/* =====================================
-   CONFIGURAÇÃO DO LABIRINTO
+/* =========================
+   CONFIGURAÇÃO
+========================= */
 
-   Use números ímpares para funcionar
-   corretamente no algoritmo.
-===================================== */
-
-const ROWS = 17;
-const COLS = 17;
+const ROWS = 15;
+const COLS = 15;
 
 let mazeMap = [];
 
-let player = {
-  row:1,
-  col:1
-};
+let playerRow = 1;
+let playerCol = 1;
 
-let gameStarted = false;
 let gameFinished = false;
-let isMoving = false;
+let moving = false;
 
 let touchStartX = 0;
 let touchStartY = 0;
 
-const mazeElement =
-  document.getElementById("maze");
 
+/* =========================
+   EMBARALHAR DIREÇÕES
+========================= */
 
-/* =====================================
-   EMBARALHAR ARRAY
-===================================== */
+function shuffle(array) {
 
-function shuffle(array){
+  for (let i = array.length - 1; i > 0; i--) {
 
-  for(
-    let i = array.length - 1;
-    i > 0;
-    i--
-  ){
+    const j = Math.floor(Math.random() * (i + 1));
 
-    const j =
-      Math.floor(
-        Math.random() * (i + 1)
-      );
-
-    [array[i],array[j]] =
-      [array[j],array[i]];
+    const temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
 
   }
 
   return array;
-
 }
 
 
-/* =====================================
-   GERAR NOVO LABIRINTO
+/* =========================
+   GERAR LABIRINTO
+========================= */
 
-   Algoritmo:
-   Recursive Backtracker
+function generateMaze() {
 
-   Isso garante que todos os caminhos
-   estejam conectados e exista uma rota
-   entre início e saída.
-===================================== */
+  mazeMap = [];
 
-function generateMaze(){
+  for (let row = 0; row < ROWS; row++) {
 
-  mazeMap = Array
-    .from(
-      {length:ROWS},
-      () => Array(COLS).fill("#")
-    );
+    mazeMap[row] = [];
+
+    for (let col = 0; col < COLS; col++) {
+      mazeMap[row][col] = "#";
+    }
+
+  }
 
 
-  function carve(row,col){
+  /* CRIA OS CORREDORES */
+
+  function carve(row, col) {
 
     mazeMap[row][col] = ".";
 
-
-    const directions =
-      shuffle([
-
-        [-2,0],
-        [2,0],
-        [0,-2],
-        [0,2]
-
-      ]);
+    const directions = shuffle([
+      [-2, 0],
+      [2, 0],
+      [0, -2],
+      [0, 2]
+    ]);
 
 
-    for(const [dr,dc] of directions){
+    for (const direction of directions) {
 
-      const nextRow =
-        row + dr;
+      const dr = direction[0];
+      const dc = direction[1];
 
-      const nextCol =
-        col + dc;
-
-
-      if(
-        nextRow > 0 &&
-        nextRow < ROWS - 1 &&
-        nextCol > 0 &&
-        nextCol < COLS - 1 &&
-        mazeMap[nextRow][nextCol] === "#"
-      ){
-
-        mazeMap[
-          row + dr / 2
-        ][
-          col + dc / 2
-        ] = ".";
+      const newRow = row + dr;
+      const newCol = col + dc;
 
 
-        carve(
-          nextRow,
-          nextCol
-        );
+      if (
+        newRow > 0 &&
+        newRow < ROWS - 1 &&
+        newCol > 0 &&
+        newCol < COLS - 1 &&
+        mazeMap[newRow][newCol] === "#"
+      ) {
+
+        mazeMap[row + dr / 2][col + dc / 2] = ".";
+
+        carve(newRow, newCol);
 
       }
 
@@ -542,35 +437,86 @@ function generateMaze(){
   }
 
 
-  /* Começa a construir */
+  /* INÍCIO DA GERAÇÃO */
 
-  carve(1,1);
-
-
-  /* Define início */
+  carve(1, 1);
 
   mazeMap[1][1] = "S";
 
 
-  /* Escolhe uma saída distante */
+  /* =========================
+     ENCONTRA O PONTO MAIS
+     DISTANTE DO INÍCIO
+  ========================= */
 
-  const possibleExits = [];
+  const visited = [];
+
+  for (let row = 0; row < ROWS; row++) {
+
+    visited[row] = [];
+
+    for (let col = 0; col < COLS; col++) {
+      visited[row][col] = false;
+    }
+
+  }
 
 
-  for(let row = 1; row < ROWS - 1; row++){
+  const queue = [{
+    row: 1,
+    col: 1,
+    distance: 0
+  }];
 
-    for(let col = 1; col < COLS - 1; col++){
+  visited[1][1] = true;
 
-      if(
-        mazeMap[row][col] === "." &&
-        Math.abs(row - 1) +
-        Math.abs(col - 1)
-        > (ROWS + COLS) / 2
-      ){
 
-        possibleExits.push({
-          row,
-          col
+  let farthest = {
+    row: 1,
+    col: 1,
+    distance: 0
+  };
+
+
+  while (queue.length > 0) {
+
+    const current = queue.shift();
+
+
+    if (current.distance > farthest.distance) {
+      farthest = current;
+    }
+
+
+    const directions = [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1]
+    ];
+
+
+    for (const direction of directions) {
+
+      const newRow = current.row + direction[0];
+      const newCol = current.col + direction[1];
+
+
+      if (
+        newRow >= 0 &&
+        newRow < ROWS &&
+        newCol >= 0 &&
+        newCol < COLS &&
+        !visited[newRow][newCol] &&
+        mazeMap[newRow][newCol] !== "#"
+      ) {
+
+        visited[newRow][newCol] = true;
+
+        queue.push({
+          row: newRow,
+          col: newCol,
+          distance: current.distance + 1
         });
 
       }
@@ -580,39 +526,129 @@ function generateMaze(){
   }
 
 
-  const exit =
-    possibleExits[
-      Math.floor(
-        Math.random() *
-        possibleExits.length
-      )
-    ];
+  /* =========================
+     SAÍDA NO FINAL DO
+     CAMINHO MAIS LONGO
+  ========================= */
+
+  mazeMap[farthest.row][farthest.col] = "E";
 
 
-  mazeMap[exit.row][exit.col] =
-    "E";
+  /* RESETA O JOGADOR */
 
+  playerRow = 1;
+  playerCol = 1;
 
-  player = {
-    row:1,
-    col:1
-  };
+  gameFinished = false;
+  moving = false;
 
 }
 
 
-/* =====================================
+/* =========================
+   CONSTRUIR LABIRINTO
+========================= */
+
+function buildMaze() {
+
+  const maze = document.getElementById("maze");
+
+  maze.innerHTML = "";
+
+  maze.style.gridTemplateColumns =
+    `repeat(${COLS}, 1fr)`;
+
+
+  for (let row = 0; row < ROWS; row++) {
+
+    for (let col = 0; col < COLS; col++) {
+
+      const cell = document.createElement("div");
+
+      cell.className = "cell";
+
+      cell.dataset.row = row;
+      cell.dataset.col = col;
+
+
+      if (mazeMap[row][col] !== "#") {
+        cell.classList.add("path");
+      }
+
+
+      if (mazeMap[row][col] === "E") {
+        cell.classList.add("exit");
+      }
+
+
+      maze.appendChild(cell);
+
+    }
+
+  }
+
+
+  drawPlayer();
+
+}
+
+
+/* =========================
+   DESENHAR PERSONAGEM
+========================= */
+
+function drawPlayer() {
+
+  const oldPlayer =
+    document.querySelector(".player");
+
+  if (oldPlayer) {
+    oldPlayer.remove();
+  }
+
+
+  const cell = document.querySelector(
+    `[data-row="${playerRow}"][data-col="${playerCol}"]`
+  );
+
+  if (!cell) return;
+
+
+  const player =
+    document.createElement("div");
+
+  player.className = "player";
+
+
+  player.innerHTML = `
+    <div class="person">
+      <div class="head"></div>
+      <div class="body"></div>
+      <div class="arm left"></div>
+      <div class="arm right"></div>
+      <div class="leg left"></div>
+      <div class="leg right"></div>
+    </div>
+  `;
+
+
+  cell.appendChild(player);
+
+}
+
+
+/* =========================
    VERIFICAR CAMINHO
-===================================== */
+========================= */
 
-function isWalkable(row,col){
+function isWalkable(row, col) {
 
-  if(
+  if (
     row < 0 ||
     row >= ROWS ||
     col < 0 ||
     col >= COLS
-  ){
+  ) {
     return false;
   }
 
@@ -621,761 +657,236 @@ function isWalkable(row,col){
 }
 
 
-/* =====================================
-   CRIAR VISUAL DO LABIRINTO
-===================================== */
+/* =========================
+   MOVIMENTO CONTÍNUO
+========================= */
 
-function buildMaze(){
+function move(direction) {
 
-  mazeElement.innerHTML = "";
-
-  mazeElement.style.gridTemplateColumns =
-    `repeat(${COLS}, 1fr)`;
-
-  mazeElement.style.gridTemplateRows =
-    `repeat(${ROWS}, 1fr)`;
+  if (gameFinished || moving) return;
 
 
-  for(let row = 0; row < ROWS; row++){
-
-    for(let col = 0; col < COLS; col++){
-
-      const cell =
-        document.createElement("div");
-
-      cell.classList.add("cell");
+  let dr = 0;
+  let dc = 0;
 
 
-      const value =
-        mazeMap[row][col];
+  if (direction === "up") dr = -1;
+  if (direction === "down") dr = 1;
+  if (direction === "left") dc = -1;
+  if (direction === "right") dc = 1;
 
 
-      if(value !== "#"){
-        cell.classList.add("path");
-      }
+  const nextRow = playerRow + dr;
+  const nextCol = playerCol + dc;
 
 
-      if(value === "E"){
-        cell.classList.add("exit");
-      }
-
-
-      cell.dataset.row = row;
-      cell.dataset.col = col;
-
-
-      mazeElement.appendChild(cell);
-
-    }
-
+  if (!isWalkable(nextRow, nextCol)) {
+    return;
   }
 
 
-  updatePlayer();
+  moving = true;
+
+
+  const moveInterval = setInterval(() => {
+
+    const testRow = playerRow + dr;
+    const testCol = playerCol + dc;
+
+
+    if (!isWalkable(testRow, testCol)) {
+
+      clearInterval(moveInterval);
+      moving = false;
+
+      return;
+    }
+
+
+    playerRow = testRow;
+    playerCol = testCol;
+
+    drawPlayer();
+
+
+    if (mazeMap[playerRow][playerCol] === "E") {
+
+      clearInterval(moveInterval);
+
+      moving = false;
+
+      finishGame();
+
+    }
+
+  }, 70);
 
 }
 
 
-/* =====================================
-   DESENHAR PERSONAGEM
-===================================== */
+/* =========================
+   FINALIZAR
+========================= */
 
-function updatePlayer(){
+function finishGame() {
+
+  gameFinished = true;
+
+
+  setTimeout(() => {
+
+    document
+      .getElementById("gameScreen")
+      .classList.remove("active");
+
+
+    document
+      .getElementById("finalScreen")
+      .classList.add("active");
+
+  }, 400);
+
+}
+
+
+/* =========================
+   COMEÇAR
+========================= */
+
+function startGame() {
+
+  generateMaze();
+
+  buildMaze();
+
 
   document
-    .querySelectorAll(".player")
-    .forEach(
-      element => element.remove()
-    );
+    .getElementById("introScreen")
+    .classList.remove("active");
 
 
-  const cell =
-    document.querySelector(
-      `[data-row="${player.row}"][data-col="${player.col}"]`
-    );
-
-
-  if(!cell) return;
-
-
-  const character =
-    document.createElement("div");
-
-  character.className = "player";
-
-
-  character.innerHTML = `
-    <div class="person">
-
-      <div class="head"></div>
-
-      <div class="body"></div>
-
-      <div class="arm left"></div>
-      <div class="arm right"></div>
-
-      <div class="leg left"></div>
-      <div class="leg right"></div>
-
-    </div>
-  `;
-
-
-  cell.appendChild(character);
+  document
+    .getElementById("gameScreen")
+    .classList.add("active");
 
 }
 
 
-/* =====================================
-   DIREÇÕES DISPONÍVEIS
-===================================== */
+/* =========================
+   REINICIAR
+========================= */
 
-function getAvailableDirections(row,col){
+function restartGame() {
 
-  const directions = [
+  generateMaze();
 
-    {
-      name:"up",
-      row:-1,
-      col:0
-    },
-
-    {
-      name:"down",
-      row:1,
-      col:0
-    },
-
-    {
-      name:"left",
-      row:0,
-      col:-1
-    },
-
-    {
-      name:"right",
-      row:0,
-      col:1
-    }
-
-  ];
+  buildMaze();
 
 
-  return directions.filter(
-    direction =>
+  document
+    .getElementById("finalScreen")
+    .classList.remove("active");
 
-      isWalkable(
-        row + direction.row,
-        col + direction.col
-      )
 
-  );
+  document
+    .getElementById("gameScreen")
+    .classList.add("active");
 
 }
 
 
-/* =====================================
-   DESCOBRIR DESTINO
-
-   Um deslize percorre todo o corredor.
-
-   Para quando encontrar:
-
-   - curva
-   - bifurcação
-   - parede
-   - saída
-===================================== */
-
-function getDestination(direction){
-
-  const movements = {
-
-    up:{
-      row:-1,
-      col:0
-    },
-
-    down:{
-      row:1,
-      col:0
-    },
-
-    left:{
-      row:0,
-      col:-1
-    },
-
-    right:{
-      row:0,
-      col:1
-    }
-
-  };
-
-
-  const move =
-    movements[direction];
-
-
-  let row =
-    player.row;
-
-  let col =
-    player.col;
-
-
-  while(true){
-
-    const nextRow =
-      row + move.row;
-
-    const nextCol =
-      col + move.col;
-
-
-    if(
-      !isWalkable(
-        nextRow,
-        nextCol
-      )
-    ){
-      break;
-    }
-
-
-    row = nextRow;
-    col = nextCol;
-
-
-    if(
-      mazeMap[row][col] === "E"
-    ){
-      break;
-    }
-
-
-    const available =
-      getAvailableDirections(
-        row,
-        col
-      );
-
-
-    const reverseRow =
-      -move.row;
-
-    const reverseCol =
-      -move.col;
-
-
-    const forwardPaths =
-      available.filter(
-        direction =>
-
-          !(
-            direction.row === reverseRow &&
-            direction.col === reverseCol
-          )
-
-      );
-
-
-    /* Bifurcação */
-
-    if(
-      forwardPaths.length !== 1
-    ){
-      break;
-    }
-
-
-    const nextDirection =
-      forwardPaths[0];
-
-
-    /* Curva */
-
-    if(
-      nextDirection.row !== move.row ||
-      nextDirection.col !== move.col
-    ){
-      break;
-    }
-
-  }
-
-
-  return {
-    row,
-    col
-  };
-
-}
-
-
-/* =====================================
-   MOVER PERSONAGEM
-===================================== */
-
-function movePlayer(direction){
-
-  if(
-    !gameStarted ||
-    gameFinished ||
-    isMoving
-  ){
-    return;
-  }
-
-
-  const movements = {
-
-    up:{
-      row:-1,
-      col:0
-    },
-
-    down:{
-      row:1,
-      col:0
-    },
-
-    left:{
-      row:0,
-      col:-1
-    },
-
-    right:{
-      row:0,
-      col:1
-    }
-
-  };
-
-
-  const move =
-    movements[direction];
-
-
-  const testRow =
-    player.row + move.row;
-
-  const testCol =
-    player.col + move.col;
-
-
-  if(
-    !isWalkable(
-      testRow,
-      testCol
-    )
-  ){
-    return;
-  }
-
-
-  const destination =
-    getDestination(direction);
-
-
-  isMoving = true;
-
-
-  const steps =
-    Math.abs(
-      destination.row -
-      player.row
-    ) +
-    Math.abs(
-      destination.col -
-      player.col
-    );
-
-
-  const duration =
-    Math.max(
-      250,
-      steps * 100
-    );
-
-
-  animateMovement(
-    player.row,
-    player.col,
-    destination.row,
-    destination.col,
-    duration
-  );
-
-}
-
-
-/* =====================================
-   ANIMAÇÃO DO MOVIMENTO
-===================================== */
-
-function animateMovement(
-  startRow,
-  startCol,
-  endRow,
-  endCol,
-  duration
-){
-
-  const startTime =
-    performance.now();
-
-
-  function animate(currentTime){
-
-    const progress =
-      Math.min(
-        (currentTime - startTime) /
-        duration,
-        1
-      );
-
-
-    const eased =
-      progress < .5
-        ? 2 * progress * progress
-        : 1 -
-          Math.pow(
-            -2 * progress + 2,
-            2
-          ) / 2;
-
-
-    const currentRow =
-      Math.round(
-        startRow +
-        (
-          endRow -
-          startRow
-        ) * eased
-      );
-
-
-    const currentCol =
-      Math.round(
-        startCol +
-        (
-          endCol -
-          startCol
-        ) * eased
-      );
-
-
-    if(
-      currentRow !== player.row ||
-      currentCol !== player.col
-    ){
-
-      player.row =
-        currentRow;
-
-      player.col =
-        currentCol;
-
-
-      updatePlayer();
-
-
-      const currentPlayer =
-        document.querySelector(".player");
-
-
-      if(currentPlayer){
-        currentPlayer.classList.add(
-          "walking"
-        );
-      }
-
-    }
-
-
-    if(progress < 1){
-
-      requestAnimationFrame(
-        animate
-      );
-
-    }else{
-
-      player.row = endRow;
-      player.col = endCol;
-
-      updatePlayer();
-
-      isMoving = false;
-
-      checkExit();
-
-    }
-
-  }
-
-
-  requestAnimationFrame(
-    animate
-  );
-
-}
-
-
-/* =====================================
-   VERIFICAR SAÍDA
-===================================== */
-
-function checkExit(){
-
-  if(
-    mazeMap[player.row][player.col] === "E"
-  ){
-
-    gameFinished = true;
-
-
-    setTimeout(() => {
-
-      document
-        .getElementById("gameScreen")
-        .classList.remove("active");
-
-
-      document
-        .getElementById("finalScreen")
-        .classList.add("active");
-
-    },500);
-
-  }
-
-}
-
-
-/* =====================================
+/* =========================
    CONTROLE POR DESLIZE
-===================================== */
+========================= */
+
+const mazeElement =
+  document.getElementById("maze");
+
 
 mazeElement.addEventListener(
   "touchstart",
-  event => {
+  function(event) {
 
-    const touch =
-      event.touches[0];
+    const touch = event.touches[0];
 
-    touchStartX =
-      touch.clientX;
-
-    touchStartY =
-      touch.clientY;
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
 
   },
-  {
-    passive:true
-  }
+  { passive: true }
 );
 
 
 mazeElement.addEventListener(
   "touchend",
-  event => {
+  function(event) {
 
-    const touch =
-      event.changedTouches[0];
-
+    const touch = event.changedTouches[0];
 
     const deltaX =
-      touch.clientX -
-      touchStartX;
+      touch.clientX - touchStartX;
 
     const deltaY =
-      touch.clientY -
-      touchStartY;
+      touch.clientY - touchStartY;
 
 
-    const minimum = 20;
-
-
-    if(
-      Math.abs(deltaX) <
-      minimum &&
-      Math.abs(deltaY) <
-      minimum
-    ){
+    if (
+      Math.abs(deltaX) < 20 &&
+      Math.abs(deltaY) < 20
+    ) {
       return;
     }
 
 
-    let direction;
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
 
+      if (deltaX > 0) {
+        move("right");
+      } else {
+        move("left");
+      }
 
-    if(
-      Math.abs(deltaX) >
-      Math.abs(deltaY)
-    ){
+    } else {
 
-      direction =
-        deltaX > 0
-          ? "right"
-          : "left";
-
-    }else{
-
-      direction =
-        deltaY > 0
-          ? "down"
-          : "up";
+      if (deltaY > 0) {
+        move("down");
+      } else {
+        move("up");
+      }
 
     }
 
-
-    movePlayer(direction);
-
   },
-  {
-    passive:true
-  }
+  { passive: true }
 );
 
 
-/* =====================================
+/* =========================
    TECLADO PARA TESTAR NO PC
-===================================== */
+========================= */
 
 document.addEventListener(
   "keydown",
-  event => {
+  function(event) {
 
-    const keys = {
+    if (event.key === "ArrowUp") {
+      move("up");
+    }
 
-      arrowup:"up",
-      w:"up",
+    if (event.key === "ArrowDown") {
+      move("down");
+    }
 
-      arrowdown:"down",
-      s:"down",
+    if (event.key === "ArrowLeft") {
+      move("left");
+    }
 
-      arrowleft:"left",
-      a:"left",
-
-      arrowright:"right",
-      d:"right"
-
-    };
-
-
-    const key =
-      event.key.toLowerCase();
-
-
-    if(keys[key]){
-
-      event.preventDefault();
-
-      movePlayer(
-        keys[key]
-      );
-
+    if (event.key === "ArrowRight") {
+      move("right");
     }
 
   }
 );
-
-
-/* =====================================
-   COMEÇAR JOGO
-
-   GERA UM NOVO LABIRINTO
-===================================== */
-
-document
-  .getElementById("startButton")
-  .addEventListener(
-    "click",
-    () => {
-
-      generateMaze();
-
-      document
-        .getElementById("introScreen")
-        .classList.remove("active");
-
-
-      document
-        .getElementById("gameScreen")
-        .classList.add("active");
-
-
-      gameStarted = true;
-      gameFinished = false;
-      isMoving = false;
-
-
-      buildMaze();
-
-    }
-  );
-
-
-/* =====================================
-   CONTINUAR
-===================================== */
-
-document
-  .getElementById("continueButton")
-  .addEventListener(
-    "click",
-    () => {
-
-      document
-        .getElementById("finalScreen")
-        .classList.remove("active");
-
-
-      document
-        .getElementById("messageScreen")
-        .classList.add("active");
-
-    }
-  );
-
-
-/* =====================================
-   JOGAR NOVAMENTE
-
-   GERA OUTRO LABIRINTO
-===================================== */
-
-document
-  .getElementById("restartButton")
-  .addEventListener(
-    "click",
-    () => {
-
-      generateMaze();
-
-
-      gameStarted = true;
-      gameFinished = false;
-      isMoving = false;
-
-
-      document
-        .getElementById("messageScreen")
-        .classList.remove("active");
-
-
-      document
-        .getElementById("gameScreen")
-        .classList.add("active");
-
-
-      buildMaze();
-
-    }
-  );
 
 </script>
 
