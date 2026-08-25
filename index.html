@@ -28,8 +28,6 @@ html, body {
 .screen {
   position: fixed;
   inset: 0;
-  width: 100%;
-  height: 100%;
   display: none;
   align-items: center;
   justify-content: center;
@@ -253,7 +251,11 @@ h1 {
 
 <body>
 
-<!-- TELA INICIAL -->
+
+<!-- =========================
+     TELA INICIAL
+========================= -->
+
 <section id="introScreen" class="screen active">
 
   <div class="content">
@@ -281,7 +283,10 @@ h1 {
 </section>
 
 
-<!-- JOGO -->
+<!-- =========================
+     JOGO
+========================= -->
+
 <section id="gameScreen" class="screen">
 
   <div class="game-header">
@@ -303,7 +308,10 @@ h1 {
 </section>
 
 
-<!-- FINAL -->
+<!-- =========================
+     FINAL
+========================= -->
+
 <section id="finalScreen" class="screen">
 
   <div class="final-content">
@@ -357,17 +365,20 @@ let touchStartY = 0;
 
 
 /* =========================
-   EMBARALHAR DIREÇÕES
+   EMBARALHAR
 ========================= */
 
 function shuffle(array) {
 
   for (let i = array.length - 1; i > 0; i--) {
 
-    const j = Math.floor(Math.random() * (i + 1));
+    const j =
+      Math.floor(Math.random() * (i + 1));
 
     const temp = array[i];
+
     array[i] = array[j];
+
     array[j] = temp;
 
   }
@@ -384,18 +395,25 @@ function generateMaze() {
 
   mazeMap = [];
 
+
+  /* CRIA TODAS AS PAREDES */
+
   for (let row = 0; row < ROWS; row++) {
 
     mazeMap[row] = [];
 
     for (let col = 0; col < COLS; col++) {
+
       mazeMap[row][col] = "#";
+
     }
 
   }
 
 
-  /* CRIA OS CORREDORES */
+  /* =========================
+     CRIAR ESTRUTURA BASE
+  ========================= */
 
   function carve(row, col) {
 
@@ -426,7 +444,12 @@ function generateMaze() {
         mazeMap[newRow][newCol] === "#"
       ) {
 
-        mazeMap[row + dr / 2][col + dc / 2] = ".";
+        mazeMap[
+          row + dr / 2
+        ][
+          col + dc / 2
+        ] = ".";
+
 
         carve(newRow, newCol);
 
@@ -437,7 +460,7 @@ function generateMaze() {
   }
 
 
-  /* INÍCIO DA GERAÇÃO */
+  /* COMEÇA PELO INÍCIO */
 
   carve(1, 1);
 
@@ -445,28 +468,128 @@ function generateMaze() {
 
 
   /* =========================
-     ENCONTRA O PONTO MAIS
+     CRIAR CAMINHOS ALTERNATIVOS
+
+     Abre algumas paredes internas
+     para criar bifurcações e rotas
+     falsas.
+  ========================= */
+
+  const attempts = 40;
+
+
+  for (let i = 0; i < attempts; i++) {
+
+    const row =
+      Math.floor(
+        Math.random() * (ROWS - 2)
+      ) + 1;
+
+
+    const col =
+      Math.floor(
+        Math.random() * (COLS - 2)
+      ) + 1;
+
+
+    /* Só tenta abrir paredes */
+
+    if (mazeMap[row][col] !== "#") {
+      continue;
+    }
+
+
+    const up =
+      mazeMap[row - 1][col] !== "#";
+
+    const down =
+      mazeMap[row + 1][col] !== "#";
+
+    const left =
+      mazeMap[row][col - 1] !== "#";
+
+    const right =
+      mazeMap[row][col + 1] !== "#";
+
+
+    /*
+      Conecta dois caminhos
+      horizontais
+    */
+
+    if (left && right) {
+
+      mazeMap[row][col] = ".";
+
+    }
+
+
+    /*
+      Conecta dois caminhos
+      verticais
+    */
+
+    else if (up && down) {
+
+      mazeMap[row][col] = ".";
+
+    }
+
+
+    /*
+      Cria bifurcações
+    */
+
+    else if (
+
+      Math.random() < 0.45 &&
+
+      (
+        (up && left) ||
+        (up && right) ||
+        (down && left) ||
+        (down && right)
+      )
+
+    ) {
+
+      mazeMap[row][col] = ".";
+
+    }
+
+  }
+
+
+  /* =========================
+     ENCONTRAR O PONTO MAIS
      DISTANTE DO INÍCIO
   ========================= */
 
   const visited = [];
+
 
   for (let row = 0; row < ROWS; row++) {
 
     visited[row] = [];
 
     for (let col = 0; col < COLS; col++) {
+
       visited[row][col] = false;
+
     }
 
   }
 
 
-  const queue = [{
+  const queue = [];
+
+
+  queue.push({
     row: 1,
     col: 1,
     distance: 0
-  }];
+  });
+
 
   visited[1][1] = true;
 
@@ -480,11 +603,17 @@ function generateMaze() {
 
   while (queue.length > 0) {
 
-    const current = queue.shift();
+    const current =
+      queue.shift();
 
 
-    if (current.distance > farthest.distance) {
+    if (
+      current.distance >
+      farthest.distance
+    ) {
+
       farthest = current;
+
     }
 
 
@@ -498,25 +627,42 @@ function generateMaze() {
 
     for (const direction of directions) {
 
-      const newRow = current.row + direction[0];
-      const newCol = current.col + direction[1];
+      const newRow =
+        current.row +
+        direction[0];
+
+
+      const newCol =
+        current.col +
+        direction[1];
 
 
       if (
+
         newRow >= 0 &&
         newRow < ROWS &&
+
         newCol >= 0 &&
         newCol < COLS &&
+
         !visited[newRow][newCol] &&
+
         mazeMap[newRow][newCol] !== "#"
+
       ) {
 
         visited[newRow][newCol] = true;
 
+
         queue.push({
+
           row: newRow,
+
           col: newCol,
-          distance: current.distance + 1
+
+          distance:
+            current.distance + 1
+
         });
 
       }
@@ -527,14 +673,20 @@ function generateMaze() {
 
 
   /* =========================
-     SAÍDA NO FINAL DO
-     CAMINHO MAIS LONGO
+     DEFINIR SAÍDA
+
+     Sempre será o ponto mais
+     distante do início.
   ========================= */
 
-  mazeMap[farthest.row][farthest.col] = "E";
+  mazeMap[
+    farthest.row
+  ][
+    farthest.col
+  ] = "E";
 
 
-  /* RESETA O JOGADOR */
+  /* RESETAR JOGADOR */
 
   playerRow = 1;
   playerCol = 1;
@@ -551,9 +703,12 @@ function generateMaze() {
 
 function buildMaze() {
 
-  const maze = document.getElementById("maze");
+  const maze =
+    document.getElementById("maze");
+
 
   maze.innerHTML = "";
+
 
   maze.style.gridTemplateColumns =
     `repeat(${COLS}, 1fr)`;
@@ -563,21 +718,33 @@ function buildMaze() {
 
     for (let col = 0; col < COLS; col++) {
 
-      const cell = document.createElement("div");
+      const cell =
+        document.createElement("div");
+
 
       cell.className = "cell";
 
+
       cell.dataset.row = row;
+
       cell.dataset.col = col;
 
 
-      if (mazeMap[row][col] !== "#") {
+      if (
+        mazeMap[row][col] !== "#"
+      ) {
+
         cell.classList.add("path");
+
       }
 
 
-      if (mazeMap[row][col] === "E") {
+      if (
+        mazeMap[row][col] === "E"
+      ) {
+
         cell.classList.add("exit");
+
       }
 
 
@@ -602,14 +769,19 @@ function drawPlayer() {
   const oldPlayer =
     document.querySelector(".player");
 
+
   if (oldPlayer) {
+
     oldPlayer.remove();
+
   }
 
 
-  const cell = document.querySelector(
-    `[data-row="${playerRow}"][data-col="${playerCol}"]`
-  );
+  const cell =
+    document.querySelector(
+      `[data-row="${playerRow}"][data-col="${playerCol}"]`
+    );
+
 
   if (!cell) return;
 
@@ -617,18 +789,28 @@ function drawPlayer() {
   const player =
     document.createElement("div");
 
+
   player.className = "player";
 
 
   player.innerHTML = `
+
     <div class="person">
+
       <div class="head"></div>
+
       <div class="body"></div>
+
       <div class="arm left"></div>
+
       <div class="arm right"></div>
+
       <div class="leg left"></div>
+
       <div class="leg right"></div>
+
     </div>
+
   `;
 
 
@@ -644,13 +826,19 @@ function drawPlayer() {
 function isWalkable(row, col) {
 
   if (
+
     row < 0 ||
     row >= ROWS ||
+
     col < 0 ||
     col >= COLS
+
   ) {
+
     return false;
+
   }
+
 
   return mazeMap[row][col] !== "#";
 
@@ -659,67 +847,112 @@ function isWalkable(row, col) {
 
 /* =========================
    MOVIMENTO CONTÍNUO
+
+   Ao deslizar, o personagem
+   continua andando até encontrar
+   uma parede.
 ========================= */
 
 function move(direction) {
 
-  if (gameFinished || moving) return;
+  if (
+    gameFinished ||
+    moving
+  ) return;
 
 
   let dr = 0;
   let dc = 0;
 
 
-  if (direction === "up") dr = -1;
-  if (direction === "down") dr = 1;
-  if (direction === "left") dc = -1;
-  if (direction === "right") dc = 1;
+  if (direction === "up") {
+    dr = -1;
+  }
+
+  if (direction === "down") {
+    dr = 1;
+  }
+
+  if (direction === "left") {
+    dc = -1;
+  }
+
+  if (direction === "right") {
+    dc = 1;
+  }
 
 
-  const nextRow = playerRow + dr;
-  const nextCol = playerCol + dc;
+  const nextRow =
+    playerRow + dr;
+
+  const nextCol =
+    playerCol + dc;
 
 
-  if (!isWalkable(nextRow, nextCol)) {
+  if (
+    !isWalkable(
+      nextRow,
+      nextCol
+    )
+  ) {
+
     return;
+
   }
 
 
   moving = true;
 
 
-  const moveInterval = setInterval(() => {
-
-    const testRow = playerRow + dr;
-    const testCol = playerCol + dc;
+  const moveInterval =
+    setInterval(() => {
 
 
-    if (!isWalkable(testRow, testCol)) {
+      const testRow =
+        playerRow + dr;
 
-      clearInterval(moveInterval);
-      moving = false;
-
-      return;
-    }
+      const testCol =
+        playerCol + dc;
 
 
-    playerRow = testRow;
-    playerCol = testCol;
+      if (
+        !isWalkable(
+          testRow,
+          testCol
+        )
+      ) {
 
-    drawPlayer();
+        clearInterval(moveInterval);
+
+        moving = false;
+
+        return;
+
+      }
 
 
-    if (mazeMap[playerRow][playerCol] === "E") {
+      playerRow = testRow;
 
-      clearInterval(moveInterval);
+      playerCol = testCol;
 
-      moving = false;
 
-      finishGame();
+      drawPlayer();
 
-    }
 
-  }, 70);
+      if (
+        mazeMap[playerRow][playerCol] === "E"
+      ) {
+
+        clearInterval(moveInterval);
+
+        moving = false;
+
+        finishGame();
+
+      }
+
+
+    }, 65);
 
 }
 
@@ -737,12 +970,14 @@ function finishGame() {
 
     document
       .getElementById("gameScreen")
-      .classList.remove("active");
+      .classList
+      .remove("active");
 
 
     document
       .getElementById("finalScreen")
-      .classList.add("active");
+      .classList
+      .add("active");
 
   }, 400);
 
@@ -750,7 +985,7 @@ function finishGame() {
 
 
 /* =========================
-   COMEÇAR
+   COMEÇAR JOGO
 ========================= */
 
 function startGame() {
@@ -762,18 +997,20 @@ function startGame() {
 
   document
     .getElementById("introScreen")
-    .classList.remove("active");
+    .classList
+    .remove("active");
 
 
   document
     .getElementById("gameScreen")
-    .classList.add("active");
+    .classList
+    .add("active");
 
 }
 
 
 /* =========================
-   REINICIAR
+   JOGAR NOVAMENTE
 ========================= */
 
 function restartGame() {
@@ -785,12 +1022,14 @@ function restartGame() {
 
   document
     .getElementById("finalScreen")
-    .classList.remove("active");
+    .classList
+    .remove("active");
 
 
   document
     .getElementById("gameScreen")
-    .classList.add("active");
+    .classList
+    .add("active");
 
 }
 
@@ -805,59 +1044,96 @@ const mazeElement =
 
 mazeElement.addEventListener(
   "touchstart",
+
   function(event) {
 
-    const touch = event.touches[0];
+    const touch =
+      event.touches[0];
 
-    touchStartX = touch.clientX;
-    touchStartY = touch.clientY;
+
+    touchStartX =
+      touch.clientX;
+
+    touchStartY =
+      touch.clientY;
 
   },
-  { passive: true }
+
+  {
+    passive: true
+  }
+
 );
 
 
 mazeElement.addEventListener(
   "touchend",
+
   function(event) {
 
-    const touch = event.changedTouches[0];
+    const touch =
+      event.changedTouches[0];
+
 
     const deltaX =
-      touch.clientX - touchStartX;
+      touch.clientX -
+      touchStartX;
 
     const deltaY =
-      touch.clientY - touchStartY;
+      touch.clientY -
+      touchStartY;
 
 
     if (
+
       Math.abs(deltaX) < 20 &&
+
       Math.abs(deltaY) < 20
+
     ) {
+
       return;
+
     }
 
 
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    if (
+
+      Math.abs(deltaX) >
+      Math.abs(deltaY)
+
+    ) {
 
       if (deltaX > 0) {
+
         move("right");
+
       } else {
+
         move("left");
+
       }
 
     } else {
 
       if (deltaY > 0) {
+
         move("down");
+
       } else {
+
         move("up");
+
       }
 
     }
 
   },
-  { passive: true }
+
+  {
+    passive: true
+  }
+
 );
 
 
@@ -867,25 +1143,38 @@ mazeElement.addEventListener(
 
 document.addEventListener(
   "keydown",
+
   function(event) {
 
-    if (event.key === "ArrowUp") {
+    if (
+      event.key === "ArrowUp"
+    ) {
       move("up");
     }
 
-    if (event.key === "ArrowDown") {
+
+    if (
+      event.key === "ArrowDown"
+    ) {
       move("down");
     }
 
-    if (event.key === "ArrowLeft") {
+
+    if (
+      event.key === "ArrowLeft"
+    ) {
       move("left");
     }
 
-    if (event.key === "ArrowRight") {
+
+    if (
+      event.key === "ArrowRight"
+    ) {
       move("right");
     }
 
   }
+
 );
 
 </script>
