@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<title>Encontre o Caminho</title>
+
+<style>
+:root {
+  --bg: #080808;
+  --wall: #f1f1f1;
+  --path: #151515;
+  --text: #ffffff;
+  --muted: #9e9e9e;
+  --accent: #d6b36a;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.screen {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  background: var(--bg);
+}
+
+.screen.active {
+  display: flex;
+}
+
+.content {
+  max-width: 600px;
+  animation: fadeIn .8s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 4px;
+  margin-bottom: 22px;
+}
+
+h1 {
+  margin: 0 0 22px;
+  font-size: clamp(42px, 11vw, 76px);
+  line-height: .96;
+  letter-spacing: -2px;
+}
+
+.description {
+  color: var(--muted);
+  max-width: 440px;
+  margin: 0 auto 38px;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.main-button {
+  border: none;
+  border-radius: 50px;
+  padding: 18px 34px;
+  background: white;
+  color: black;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.main-button:active {
+  transform: scale(.96);
+}
+
+/* =========================
+   JOGO
+========================= */
+
+#gameScreen {
+  padding: 0;
+}
+
+.game-header {
+  position: absolute;
+  top: max(15px, env(safe-area-inset-top));
+  left: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+.game-title {
+  font-size: 10px;
+  color: rgba(255,255,255,.55);
+  letter-spacing: 3px;
+}
+
+#messageBox {
+  position: absolute;
+  top: 52px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+
+  width: min(88vw, 440px);
+
+  padding: 15px 20px;
+  border-radius: 18px;
+
+  background: rgba(0,0,0,.78);
+  border: 1px solid rgba(255,255,255,.12);
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: .5s ease;
+  z-index: 20;
+}
+
+#messageBox.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+#messageText {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+#mazeContainer {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 95px 15px 170px;
+}
+
+#maze {
+  width: min(94vw, 600px);
+  aspect-ratio: 1 / 1;
+
+  display: grid;
+
+  background: var(--wall);
+
+  border: 2px solid rgba(255,255,255,.25);
+
+  box-shadow: 0 0 60px rgba(255,255,255,.04);
+}
+
+.cell {
+  position: relative;
+  background: var(--wall);
+}
+
+.cell.path {
+  background: var(--path);
+}
+
+.cell.exit {
+  background: var(--accent);
+  animation: exitPulse 1.6s infinite;
+}
+
+@keyframes exitPulse {
+  0%, 100% {
+    opacity: .7;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.player {
+  position: absolute;
+  inset: 20%;
+
+  background: white;
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 10px rgba(255,255,255,.9),
+    0 0 22px rgba(255,255,255,.4);
+}
+
+/* =========================
+   CONTROLES
+========================= */
+
+.controls {
+  position: absolute;
+
+  bottom: max(18px, env(safe-area-inset-bottom));
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  display: grid;
+
+  grid-template-columns: repeat(3, 56px);
+  grid-template-rows: repeat(2, 56px);
+
+  gap: 8px;
+
+  z-index: 30;
+}
+
+.control {
+  border-radius: 16px;
+
+  border: 1px solid rgba(255,255,255,.14);
+
+  background: rgba(255,255,255,.08);
+
+  color: white;
+
+  font-size: 21px;
+
+  cursor: pointer;
+}
+
+.control:active {
+  background: rgba(255,255,255,.25);
+  transform: scale(.93);
+}
+
+.up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.down {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+/* =========================
+   FINAL
+========================= */
+
+.final-content {
+  max-width: 620px;
+  animation: fadeIn .8s ease;
+}
+
+.final-small {
+  color: var(--accent);
+  font-size: 11px;
+  letter-spacing: 4px;
+  font-weight: bold;
+  margin-bottom: 25px;
+}
+
+.final-title {
+  font-size: clamp(45px, 12vw, 82px);
+  line-height: .95;
+  letter-spacing: -3px;
+  margin-bottom: 28px;
+}
+
+.final-text {
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+.reencontro {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 4px;
+  margin-bottom: 25px;
+}
+
+@media (max-height: 700px) {
+
+  #mazeContainer {
+    padding-top: 75px;
+    padding-bottom: 140px;
+  }
+
+  .controls {
+    grid-template-columns: repeat(3, 48px);
+    grid-template-rows: repeat(2, 48px);
+  }
+
+  #messageBox {
+    top: 40px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<!-- TELA INICIAL -->
+
+<section id="introScreen" class="screen active">
+
+  <div class="content">
+
+    <div class="eyebrow">
+      UMA EXPERIÊNCIA
+    </div>
+
+    <h1>
+      VOCÊ CONSEGUE<br>
+      ENCONTRAR<br>
+      O CAMINHO?
+    </h1>
+
+    <p class="description">
+      Às vezes, para encontrar algo,
+      precisamos descobrir para onde ir.
+    </p>
+
+    <button class="main-button" id="startButton">
+      COMEÇAR
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- JOGO -->
+
+<section id="gameScreen" class="screen">
+
+  <div class="game-header">
+    <div class="game-title">
+      ENCONTRE A SAÍDA
+    </div>
+  </div>
+
+  <div id="messageBox">
+    <p id="messageText"></p>
+  </div>
+
+  <div id="mazeContainer">
+    <div id="maze"></div>
+  </div>
+
+  <div class="controls">
+
+    <button class="control up" data-direction="up">↑</button>
+
+    <button class="control left" data-direction="left">←</button>
+    <button class="control down" data-direction="down">↓</button>
+    <button class="control right" data-direction="right">→</button>
+
+  </div>
+
+</section>
+
+
+<!-- FINAL 1 -->
+
+<section id="finalScreen" class="screen">
+
+  <div class="final-content">
+
+    <div class="final-small">
+      VOCÊ ENCONTROU O CAMINHO
+    </div>
+
+    <h1 class="final-title">
+      VOCÊ<br>
+      CONSEGUIU.
+    </h1>
+
+    <p class="final-text">
+      Mas existe um caminho ainda mais importante.
+    </p>
+
+    <button class="main-button" id="continueButton">
+      CONTINUAR
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- FINAL 2 -->
+
+<section id="messageScreen" class="screen">
+
+  <div class="final-content">
+
+    <div class="reencontro">
+      DOMINGO DO REENCONTRO
+    </div>
+
+    <h1 class="final-title">
+      O CAMINHO<br>
+      DE VOLTA<br>
+      PARA DEUS.
+    </h1>
+
+    <p class="final-text">
+      Não importa o quanto você se afastou.
+      <br><br>
+      O caminho de volta ainda está aberto.
+    </p>
+
+    <button class="main-button" id="restartButton">
+      JOGAR NOVAMENTE
+    </button>
+
+  </div>
+
+</section>
+
+
+<script>
+
+/*
+  # = PAREDE
+  . = CAMINHO
+  S = INÍCIO
+  E = SAÍDA
+
+  Labirinto maior com bifurcações
+  e diversos becos sem saída.
+*/
+
+const mazeMap = [
+
+"#########################",
+"#S....#.......#.........#",
+"#####.#.#####.#.#######.#",
+"#.....#.....#.#.......#.#",
+"#.#########.#.#######.#.#",
+"#.#.......#.#.......#.#.#",
+"#.#.#####.#.#######.#.#.#",
+"#...#...#.#.....#...#...#",
+"#####.#.#.#####.#.#####.#",
+"#.....#.#.....#.#.....#.#",
+"#.#####.#####.#.#####.#.#",
+"#.#.........#.#.....#.#.#",
+"#.#.#######.#.#####.#.#.#",
+"#.#.#.....#.#.....#.#...#",
+"#...#.###.#.#####.#.#####",
+"#####.#...#.....#.#.....#",
+"#.....#.#######.#.#####.#",
+"#.#####.......#.#.....#.#",
+"#.#.....#####.#.#####.#.#",
+"#.#.###.....#.#.....#.#.#",
+"#.#.#.#####.#.#####.#.#.#",
+"#...#.....#.#.......#...#",
+"#########.#.###########.#",
+"#.........#.............E",
+"#########################"
+
+];
+
+const rows = mazeMap.length;
+const cols = mazeMap[0].length;
+
+let player = {
+  row: 1,
+  col: 1
+};
+
+let gameStarted = false;
+let gameFinished = false;
+
+const mazeElement =
+  document.getElementById("maze");
+
+const messageBox =
+  document.getElementById("messageBox");
+
+const messageText =
+  document.getElementById("messageText");
+
+
+/* MENSAGENS */
+
+const checkpoints = [
+
+  {
+    row: 3,
+    col: 5,
+    message: "Às vezes, a gente se perde."
+  },
+
+  {
+    row: 7,
+    col: 9,
+    message: "Tentamos encontrar outros caminhos."
+  },
+
+  {
+    row: 13,
+    col: 11,
+    message: "Nos afastamos sem perceber."
+  },
+
+  {
+    row: 21,
+    col: 19,
+    message: "Mas sempre existe um caminho de volta."
+  }
+
+];
+
+const triggeredMessages = new Set();
+
+
+/* CRIAR LABIRINTO */
+
+function buildMaze() {
+
+  mazeElement.innerHTML = "";
+
+  mazeElement.style.gridTemplateColumns =
+    `repeat(${cols}, 1fr)`;
+
+  mazeElement.style.gridTemplateRows =
+    `repeat(${rows}, 1fr)`;
+
+  for (let row = 0; row < rows; row++) {
+
+    for (let col = 0; col < cols; col++) {
+
+      const cell =
+        document.createElement("div");
+
+      cell.classList.add("cell");
+
+      const value =
+        mazeMap[row][col];
+
+      if (
+        value === "." ||
+        value === "S" ||
+        value === "E"
+      ) {
+        cell.classList.add("path");
+      }
+
+      if (value === "E") {
+        cell.classList.add("exit");
+      }
+
+      cell.dataset.row = row;
+      cell.dataset.col = col;
+
+      mazeElement.appendChild(cell);
+
+    }
+
+  }
+
+  updatePlayer();
+
+}
+
+
+/* ATUALIZAR JOGADOR */
+
+function updatePlayer() {
+
+  document
+    .querySelectorAll(".player")
+    .forEach(el => el.remove());
+
+  const cell =
+    document.querySelector(
+      `[data-row="${player.row}"][data-col="${player.col}"]`
+    );
+
+  if (!cell) return;
+
+  const character =
+    document.createElement("div");
+
+  character.classList.add("player");
+
+  cell.appendChild(character);
+
+}
+
+
+/* MOVIMENTAÇÃO */
+
+function movePlayer(direction) {
+
+  if (!gameStarted || gameFinished) return;
+
+  let newRow = player.row;
+  let newCol = player.col;
+
+  if (direction === "up") newRow--;
+
+  if (direction === "down") newRow++;
+
+  if (direction === "left") newCol--;
+
+  if (direction === "right") newCol++;
+
+  if (
+    newRow < 0 ||
+    newRow >= rows ||
+    newCol < 0 ||
+    newCol >= cols
+  ) {
+    return;
+  }
+
+  const destination =
+    mazeMap[newRow][newCol];
+
+  if (destination === "#") {
+    return;
+  }
+
+  player.row = newRow;
+  player.col = newCol;
+
+  updatePlayer();
+
+  checkMessages();
+  checkExit();
+
+}
+
+
+/* MENSAGENS */
+
+function checkMessages() {
+
+  checkpoints.forEach(
+    (checkpoint, index) => {
+
+      if (
+        player.row === checkpoint.row &&
+        player.col === checkpoint.col &&
+        !triggeredMessages.has(index)
+      ) {
+
+        triggeredMessages.add(index);
+
+        showMessage(
+          checkpoint.message
+        );
+
+      }
+
+    }
+  );
+
+}
+
+
+function showMessage(message) {
+
+  messageText.textContent = message;
+
+  messageBox.classList.add("show");
+
+  setTimeout(() => {
+
+    messageBox.classList.remove("show");
+
+  }, 3200);
+
+}
+
+
+/* VERIFICAR SAÍDA */
+
+function checkExit() {
+
+  if (
+    mazeMap[player.row][player.col] === "E"
+  ) {
+
+    gameFinished = true;
+
+    setTimeout(() => {
+
+      document
+        .getElementById("gameScreen")
+        .classList
+        .remove("active");
+
+      document
+        .getElementById("finalScreen")
+        .classList
+        .add("active");
+
+    }, 700);
+
+  }
+
+}
+
+
+/* INICIAR */
+
+document
+  .getElementById("startButton")
+  .addEventListener("click", () => {
+
+    document
+      .getElementById("introScreen")
+      .classList
+      .remove("active");
+
+    document
+      .getElementById("gameScreen")
+      .classList
+      .add("active");
+
+    gameStarted = true;
+    gameFinished = false;
+
+    buildMaze();
+
+  });
+
+
+/* BOTÕES */
+
+document
+  .querySelectorAll("[data-direction]")
+  .forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      movePlayer(
+        button.dataset.direction
+      );
+
+    });
+
+  });
+
+
+/* TECLADO */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    const key =
+      event.key.toLowerCase();
+
+    const directions = {
+
+      arrowup: "up",
+      w: "up",
+
+      arrowdown: "down",
+      s: "down",
+
+      arrowleft: "left",
+      a: "left",
+
+      arrowright: "right",
+      d: "right"
+
+    };
+
+    if (directions[key]) {
+
+      event.preventDefault();
+
+      movePlayer(
+        directions[key]
+      );
+
+    }
+
+  }
+);
+
+
+/* CONTINUAR */
+
+document
+  .getElementById("continueButton")
+  .addEventListener("click", () => {
+
+    document
+      .getElementById("finalScreen")
+      .classList
+      .remove("active");
+
+    document
+      .getElementById("messageScreen")
+      .classList
+      .add("active");
+
+  });
+
+
+/* REINICIAR */
+
+document
+  .getElementById("restartButton")
+  .addEventListener("click", () => {
+
+    player = {
+      row: 1,
+      col: 1
+    };
+
+    triggeredMessages.clear();
+
+    gameFinished = false;
+    gameStarted = true;
+
+    document
+      .getElementById("messageScreen")
+      .classList
+      .remove("active");
+
+    document
+      .getElementById("gameScreen")
+      .classList
+      .add("active");
+
+    buildMaze();
+
+  });
+
+</script>
+
+</body>
+</html>
